@@ -67,7 +67,6 @@ jQuery to `component/myownjquery` rather than `component/components-jquery`:
 Todo
 ----
 
-* Write tests
 * Set up a [RequireJS](http://requirejs.org) config for installed components
 
 License
