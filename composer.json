@@ -1,0 +1,14 @@
+{
+    "name": "robloach/component-installer",
+    "description": "Allows installation of Components via Composer.",
+    "type": "composer-installer",
+    "license": "MIT",
+    "autoload": {
+        "psr-0": {
+            "ComponentInstaller": "src/"
+        }
+    },
+    "extra": {
+        "class": "ComponentInstaller\\Installer"
+    }
+}
