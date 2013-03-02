@@ -1,45 +1,46 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Component Installer : Allows Components to be installed with Composer." />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Component Installer by RobLoach</title>
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>Component Installer</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
   </head>
-
   <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Component Installer</h1>
+        <p class="header">Allows Components to be installed with Composer.</p>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/RobLoach/component-installer">View on GitHub</a>
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/RobLoach/component-installer/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/RobLoach/component-installer/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/RobLoach/component-installer">View On GitHub</a></li>
+        </ul>
 
-          <h1 id="project_title">Component Installer</h1>
-          <h2 id="project_tagline">Allows Components to be installed with Composer.</h2>
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/RobLoach">RobLoach</a></p>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/RobLoach/component-installer/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/RobLoach/component-installer/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
+      </header>
+      <section>
         <h1>Component Installer for Composer</h1>
 
 <p>Allows installation of Components via <a href="http://getcomposer.org">Composer</a>.</p>
+
+<p><a href="http://travis-ci.org/RobLoach/component-installer"><img src="https://secure.travis-ci.org/RobLoach/component-installer.png?branch=master" alt="Build Status"></a></p>
 
 <h2>Usage</h2>
 
 <p>To install a Component with Composer, add the component to your <code>composer.json</code>
 <code>require</code> key. The following will install <a href="http://jquery.com">jQuery</a>, with
-Component Installer, into <code>component/components-jquery</code>:</p>
+Component Installer, into <code>components/components-jquery</code>:</p>
 
 <div class="highlight"><pre><span class="p">{</span>
     <span class="nt">"require"</span><span class="p">:</span> <span class="p">{</span>
@@ -61,11 +62,12 @@ Component Installer, into <code>component/components-jquery</code>:</p>
 <span class="p">}</span>
 </pre></div>
 
-<h2>Component Directory</h2>
+<h3>Installation Directory</h3>
 
-<p>The root package can state where components should be installed by leveraging
-<code>component-dir</code> in <code>config</code>. The following will install jQuery to
-<code>public/components-jquery</code> rather than <code>component/components-jquery</code>:</p>
+<p>By default, components will be installed to the <code>components</code> directory, but this
+can be overriden by using stating the <code>component-dir</code> in <code>config</code> of the root
+package. The following will install jQuery to <code>public/components-jquery</code> rather
+than <code>components/components-jquery</code>:</p>
 
 <div class="highlight"><pre><span class="p">{</span>
     <span class="nt">"require"</span><span class="p">:</span> <span class="p">{</span>
@@ -77,10 +79,10 @@ Component Installer, into <code>component/components-jquery</code>:</p>
 <span class="p">}</span>
 </pre></div>
 
-<h2>Component Name</h2>
+<h3>Component Name</h3>
 
-<p>Components can override their own installation name. The following will install
-jQuery to <code>component/myownjquery</code> rather than <code>component/components-jquery</code>:</p>
+<p>Components can override their own component name. The following will install
+jQuery to <code>components/myownjquery</code> rather than <code>components/components-jquery</code>:</p>
 
 <div class="highlight"><pre><span class="p">{</span>
     <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"components/jquery"</span><span class="p">,</span>
@@ -94,24 +96,19 @@ jQuery to <code>component/myownjquery</code> rather than <code>component/compone
 <h2>Todo</h2>
 
 <ul>
-<li>Write tests</li>
+<li>Read some of the information from <code>component.json</code>
+</li>
 <li>Set up a <a href="http://requirejs.org">RequireJS</a> config for installed components</li>
 </ul><h2>License</h2>
 
 <p>Component Installer is licensed under the MIT License - see the LICENSE file
 for details.</p>
       </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Component Installer maintained by <a href="https://github.com/RobLoach">RobLoach</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
       </footer>
     </div>
-
-    
-
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
   </body>
 </html>
