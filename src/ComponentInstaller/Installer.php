@@ -1,10 +1,22 @@
 <?php
 
+/*
+ * This file is part of Component Installer.
+ *
+ * (c) Rob Loach <http://robloach.net>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace ComponentInstaller;
 
 use Composer\Package\PackageInterface;
 use Composer\Installer\LibraryInstaller;
 
+/**
+ * The Component Installer for Composer.
+ */
 class Installer extends LibraryInstaller
 {
     /**

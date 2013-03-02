@@ -3,6 +3,12 @@
     "description": "Allows installation of Components via Composer.",
     "type": "composer-installer",
     "license": "MIT",
+    "authors": [
+        {
+            "name": "Rob Loach",
+            "homepage": "http://robloach.net"
+        }
+    ],
     "autoload": {
         "psr-0": {
             "ComponentInstaller": "src/"
@@ -10,5 +16,8 @@
     },
     "extra": {
         "class": "ComponentInstaller\\Installer"
+    },
+    "require": {
+        "php": ">=5.3.2",
     }
 }
