@@ -3,6 +3,8 @@ Component Installer for Composer
 
 Allows installation of Components via [Composer](http://getcomposer.org).
 
+[![Build Status](https://secure.travis-ci.org/RobLoach/component-installer.png?branch=master)](http://travis-ci.org/RobLoach/component-installer)
+
 Usage
 -----
 
@@ -68,7 +70,7 @@ jQuery to `components/myownjquery` rather than `components/components-jquery`:
 Todo
 ----
 
-* Read some of the information from component.json
+* Read some of the information from `component.json`
 * Set up a [RequireJS](http://requirejs.org) config for installed components
 
 License
