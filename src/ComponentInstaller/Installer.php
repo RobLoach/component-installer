@@ -43,7 +43,7 @@ class Installer extends LibraryInstaller
 
         // Figure out where all Components should be installed.
         $config = $this->composer->getConfig();
-        $dest = $config->has('component-dir') ? $config->get('component-dir') : 'component';
+        $dest = $config->has('component-dir') ? $config->get('component-dir') : 'components';
 
         return $dest . DIRECTORY_SEPARATOR . $name;
     }

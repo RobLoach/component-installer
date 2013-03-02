@@ -8,7 +8,7 @@ Usage
 
 To install a Component with Composer, add the component to your `composer.json`
 `require` key. The following will install [jQuery](http://jquery.com), with
-Component Installer, into `component/components-jquery`:
+Component Installer, into `components/components-jquery`:
 
 ``` json
 {
@@ -34,9 +34,10 @@ To set up a Component to be installed with Component Installer, have it
 
 ### Installation Directory
 
-The root package can state where Components should be installed by leveraging
-`component-dir` in `config`. The following will install jQuery to
-`public/components-jquery` rather than `component/components-jquery`:
+By default, components will be installed to the `components` directory, but this
+can be overriden by using stating the `component-dir` in `config` of the root
+package. The following will install jQuery to `public/components-jquery` rather
+than `components/components-jquery`:
 
 ``` json
 {
@@ -52,7 +53,7 @@ The root package can state where Components should be installed by leveraging
 ### Component Name
 
 Components can override their own component name. The following will install
-jQuery to `component/myownjquery` rather than `component/components-jquery`:
+jQuery to `components/myownjquery` rather than `components/components-jquery`:
 
 ``` json
 {
@@ -67,6 +68,7 @@ jQuery to `component/myownjquery` rather than `component/components-jquery`:
 Todo
 ----
 
+* Read some of the information from component.json
 * Set up a [RequireJS](http://requirejs.org) config for installed components
 
 License
