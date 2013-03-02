@@ -70,6 +70,7 @@ jQuery to `components/myownjquery` rather than `components/components-jquery`:
 Todo
 ----
 
+* Put together a list of Components that make use of Component Installer
 * Read some of the information from `component.json`
 * Set up a [RequireJS](http://requirejs.org) config for installed components
 
