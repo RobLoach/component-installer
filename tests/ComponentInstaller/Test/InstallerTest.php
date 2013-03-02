@@ -37,9 +37,9 @@ class InstallerTest extends LibraryInstallerTest
      *
      * @return void
      *
-     * @dataProvider providerSupports
+     * @dataProvider providerComponentSupports
      */
-    public function testSupports($type, $expected)
+    public function testComponentSupports($type, $expected)
     {
         $installer = new Installer($this->io, $this->composer, 'component');
         $this->assertSame($expected, $installer->supports($type), sprintf('Failed to show support for %s', $type));
@@ -48,9 +48,9 @@ class InstallerTest extends LibraryInstallerTest
     /**
      * providerSupports
      *
-     * @see testSupports()
+     * @see testComponentSupports()
      */
-    function providerSupports()
+    function providerComponentSupports()
     {
         return array(
             array('component', true),
@@ -71,11 +71,11 @@ class InstallerTest extends LibraryInstallerTest
      * @param $componentdir
      *   The component-dir provided by the root config.
      *
-     * @dataProvider providerGetInstallPath
+     * @dataProvider providerComponentGetInstallPath
      *
      * @see ComponentInstaller\\Installer::getInstallPath()
      */
-    public function testGetInstallPath($name, $expected, $componentname = '', $componentdir = '')
+    public function testComponentGetInstallPath($name, $expected, $componentname = '', $componentdir = '')
     {
         $installer = new Installer($this->io, $this->composer, 'component');
         $package = new Package($name, '1.0.0', '1.0.0');
@@ -95,9 +95,9 @@ class InstallerTest extends LibraryInstallerTest
     /**
      * providerGetInstallPath
      *
-     * @see testGetInstallPath()
+     * @see testComponentGetInstallPath()
      */
-    public function providerGetInstallPath() {
+    public function providerComponentGetInstallPath() {
         return array(
             array('foo/bar1', 'components/foo-bar1'),
             array('foo/bar2', 'components/bar2', 'bar2'),
