@@ -32,10 +32,9 @@ To set up a Component to be installed with Component Installer, have it
 }
 ```
 
-Component Directory
--------------------
+### Installation Directory
 
-The root package can state where components should be installed by leveraging
+The root package can state where Components should be installed by leveraging
 `component-dir` in `config`. The following will install jQuery to
 `public/components-jquery` rather than `component/components-jquery`:
 
@@ -50,10 +49,9 @@ The root package can state where components should be installed by leveraging
 }
 ```
 
-Component Name
---------------
+### Component Name
 
-Components can override their own installation name. The following will install
+Components can override their own component name. The following will install
 jQuery to `component/myownjquery` rather than `component/components-jquery`:
 
 ``` json
