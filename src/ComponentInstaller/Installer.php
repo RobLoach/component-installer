@@ -25,7 +25,7 @@ class Installer extends LibraryInstaller
 
         // Allow the installation directory to be overriden by the root package.
         $extra = $package->getExtra();
-        if (isset($extra['component-name']) {
+        if (isset($extra['component-name'])) {
             $name = $extra['component-name'];
         }
 
