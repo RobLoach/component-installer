@@ -30,27 +30,26 @@
 
       </header>
       <section>
-        <h1>Component Installer for Composer</h1>
+        <h1>Component Installer for Composer <a href="http://travis-ci.org/RobLoach/component-installer"><img src="https://secure.travis-ci.org/RobLoach/component-installer.png?branch=master" alt="Build Status"></a>
+</h1>
 
 <p>Allows installation of Components via <a href="http://getcomposer.org">Composer</a>.</p>
 
-<p><a href="http://travis-ci.org/RobLoach/component-installer"><img src="https://secure.travis-ci.org/RobLoach/component-installer.png?branch=master" alt="Build Status"></a></p>
-
 <h2>Usage</h2>
 
-<p>To install a Component with Composer, add the component to your <code>composer.json</code>
+<p>To install a Component with Composer, add the Component to your <code>composer.json</code>
 <code>require</code> key. The following will install <a href="http://jquery.com">jQuery</a>, with
 Component Installer, into <code>components/components-jquery</code>:</p>
 
 <div class="highlight"><pre><span class="p">{</span>
     <span class="nt">"require"</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">"components/jquery"</span><span class="p">:</span> <span class="s2">"*"</span>
+        <span class="nt">"components/jquery"</span><span class="p">:</span> <span class="s2">"1.9.*"</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 
 <p>To set up a Component to be installed with Component Installer, have it
-<code>require</code> the package <code>robloach/component-installer</code> and stating the <code>type</code> as
+<code>require</code> the package <code>robloach/component-installer</code> and set the <code>type</code> to
 <code>component</code>:</p>
 
 <div class="highlight"><pre><span class="p">{</span>
@@ -64,10 +63,10 @@ Component Installer, into <code>components/components-jquery</code>:</p>
 
 <h3>Installation Directory</h3>
 
-<p>By default, components will be installed to the <code>components</code> directory, but this
-can be overriden by using stating the <code>component-dir</code> in <code>config</code> of the root
-package. The following will install jQuery to <code>public/components-jquery</code> rather
-than <code>components/components-jquery</code>:</p>
+<p>By default, Components will be installed to the <code>components</code> directory, but this
+can be overriden by using <code>component-dir</code> in <code>config</code> of the root package. The
+following will install jQuery to <code>public/components-jquery</code> rather than
+<code>components/components-jquery</code>:</p>
 
 <div class="highlight"><pre><span class="p">{</span>
     <span class="nt">"require"</span><span class="p">:</span> <span class="p">{</span>
@@ -96,6 +95,7 @@ jQuery to <code>components/myownjquery</code> rather than <code>components/compo
 <h2>Todo</h2>
 
 <ul>
+<li>Put together a list of Components that make use of Component Installer</li>
 <li>Read some of the information from <code>component.json</code>
 </li>
 <li>Set up a <a href="http://requirejs.org">RequireJS</a> config for installed components</li>
