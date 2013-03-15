@@ -33,13 +33,14 @@ class Installer extends LibraryInstaller
             $vendor = 'component';
             $name = $prettyName;
         }
-        $name = $vendor . '-' . $name;
 
-        // Allow the installation directory to be overriden by the root package.
+        // Allow the component to define its own name.
         $extra = $package->getExtra();
-        if (isset($extra['component-name'])) {
-            $name = $extra['component-name'];
+        $component = isset($extra['component']) ? $extra['component'] : array();
+        if (isset($component['name'])) {
+            $name = $component['name'];
         }
+        $name = $vendor . '-' . $name;
 
         // Figure out where all Components should be installed.
         $config = $this->composer->getConfig();

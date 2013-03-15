@@ -53,14 +53,16 @@ following will install jQuery to `public/components-jquery` rather than
 ### Component Name
 
 Components can override their own component name. The following will install
-jQuery to `components/myownjquery` rather than `components/components-jquery`:
+jQuery to `components/components-myownjquery` rather than `components/components-jquery`:
 
 ``` json
 {
     "name": "components/jquery",
     "type": "component",
     "extra": {
-        "component-name": "myownjquery"
+        "component": {
+            "name": "myownjquery"
+        }
     }
 }
 ```

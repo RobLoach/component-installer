@@ -1,10 +1,9 @@
 <?php
 
 /*
- * This file is part of Composer.
+ * This file is part of Component Installer.
  *
- * (c) Nils Adermann <naderman@naderman.de>
- *     Jordi Boggiano <j.boggiano@seld.be>
+ * (c) Rob Loach <http://robloach.net>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -52,11 +51,11 @@ class InstallerTest extends LibraryInstallerTest
      */
     function providerComponentSupports()
     {
-        return array(
-            array('component', true),
-            array('not-a-component', false),
-            array('library', false),
-        );
+        $tests[] = array('component', true);
+        $tests[] = array('not-a-component', false);
+        $tests[] = array('library', false);
+
+        return $tests;
     }
 
     /**
@@ -75,14 +74,12 @@ class InstallerTest extends LibraryInstallerTest
      *
      * @see ComponentInstaller\\Installer::getInstallPath()
      */
-    public function testComponentGetInstallPath($name, $expected, $componentname = '', $componentdir = '')
+    public function testComponentGetInstallPath($name, $expected, $extra = array(), $componentdir = '')
     {
         $installer = new Installer($this->io, $this->composer, 'component');
         $package = new Package($name, '1.0.0', '1.0.0');
-        if (!empty($componentname)) {
-            $package->setExtra(array(
-                'component-name' => $componentname,
-            ));
+        if (!empty($extra)) {
+            $package->setExtra($extra);
         }
         if (!empty($componentdir)) {
             $config['config']['component-dir'] = $componentdir;
@@ -97,13 +94,21 @@ class InstallerTest extends LibraryInstallerTest
      *
      * @see testComponentGetInstallPath()
      */
-    public function providerComponentGetInstallPath() {
-        return array(
-            array('foo/bar1', 'components/foo-bar1'),
-            array('foo/bar2', 'components/bar2', 'bar2'),
-            array('foo/bar3', 'public/foo-bar3', '', 'public'),
-            array('foo/bar4', 'public/foobar', 'foobar', 'public'),
-        );
-    }
+    public function providerComponentGetInstallPath()
+    {
+        $tests[] = array('foo/bar1', 'components/foo-bar1');
+        $tests[] = array('foo/bar2', 'components/foo-foobar', array(
+            'component' => array(
+                'name' => 'foobar'
+            )
+        ));
+        $tests[] = array('foo/bar3', 'public/foo-bar3', array(), 'public');
+        $tests[] = array('foo/bar4', 'public/foo-foobar', array(
+            'component' => array(
+                'name' => 'foobar'
+            )
+        ), 'public');
 
+        return $tests;
+    }
 }
