@@ -8,7 +8,7 @@ Usage
 
 To install a Component with Composer, add the Component to your `composer.json`
 `require` key. The following will install [jQuery](http://jquery.com), with
-Component Installer, into `components/components-jquery`:
+Component Installer, into `components/jquery`:
 
 ``` json
 {
@@ -28,6 +28,13 @@ To set up a Component to be installed with Component Installer, have it
     "type": "component",
     "require": {
         "robloach/component-installer": "*"
+    },
+    "extra": {
+        "component": {
+            "scripts": [
+                "jquery.js"
+            ]
+        }
     }
 }
 ```
@@ -36,8 +43,8 @@ To set up a Component to be installed with Component Installer, have it
 
 By default, Components will be installed to the `components` directory, but this
 can be overriden by using `component-dir` in `config` of the root package. The
-following will install jQuery to `public/components-jquery` rather than
-`components/components-jquery`:
+following will install jQuery to `public/jquery` rather than
+`components/jquery`:
 
 ``` json
 {
@@ -53,7 +60,7 @@ following will install jQuery to `public/components-jquery` rather than
 ### Component Name
 
 Components can override their own component name. The following will install
-jQuery to `components/components-myownjquery` rather than `components/components-jquery`:
+jQuery to `components/myownjquery` rather than `components/jquery`:
 
 ``` json
 {
@@ -71,8 +78,8 @@ Todo
 ----
 
 * Put together a list of Components that make use of Component Installer
-* Read some of the information from `component.json`
-* Set up a [RequireJS](http://requirejs.org) config for installed components
+* Provide the shim information for repositories that don't use require.js
+* Determine if "scripts" is handled correctly, or if it should use "main"
 
 License
 -------

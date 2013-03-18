@@ -96,14 +96,14 @@ class InstallerTest extends LibraryInstallerTest
      */
     public function providerComponentGetInstallPath()
     {
-        $tests[] = array('foo/bar1', 'components/foo-bar1');
-        $tests[] = array('foo/bar2', 'components/foo-foobar', array(
+        $tests[] = array('foo/bar1', 'components/bar1');
+        $tests[] = array('foo/bar2', 'components/foobar', array(
             'component' => array(
                 'name' => 'foobar'
             )
         ));
-        $tests[] = array('foo/bar3', 'public/foo-bar3', array(), 'public');
-        $tests[] = array('foo/bar4', 'public/foo-foobar', array(
+        $tests[] = array('foo/bar3', 'public/bar3', array(), 'public');
+        $tests[] = array('foo/bar4', 'public/foobar', array(
             'component' => array(
                 'name' => 'foobar'
             )
