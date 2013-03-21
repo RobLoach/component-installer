@@ -18,6 +18,34 @@ Component Installer, into `components/jquery`:
 }
 ```
 
+### Using the Component
+
+Component Installer will build a [RequireJS](http://requirejs.org) configuration
+for you, which allows autoloading the scripts only when required:
+
+``` html
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>jQuery+RequireJS Component Installer Sample</title>
+        <script src="components/require.js"></script>
+    </head>
+    <body>
+        <h1>jQuery+RequireJS Component Installer Sample Page</h1>
+        <script>
+          require(['jquery'], function($) {
+            $('body').css('background-color', 'green');
+          });
+        </script>
+    </body>
+</html>
+```
+
+Although this is completely optional, you can still load the global script if
+desired. In this example, jQuery would be at `components/jquery/jquery.js`.
+
+### Creating a Component
+
 To set up a Component to be installed with Component Installer, have it
 `require` the package `robloach/component-installer` and set the `type` to
 `component`:
@@ -74,12 +102,45 @@ jQuery to `components/myownjquery` rather than `components/jquery`:
 }
 ```
 
+### RequireJS Configuration
+
+Components can specify how [RequireJS](http://requirejs.org) registers and
+interacts with them:
+
+``` json
+{
+    "name": "components/backbone",
+    "type": "component",
+    "require": {
+        "components/underscore": "*"
+    },
+    "extra": {
+        "component": {
+            "shim": {
+                "deps": ["underscore", "jquery"],
+                "exports": "Backbone"
+            }
+        }
+    },
+    "config": {
+        "component-baseurl": "/another/path"
+    }
+}
+```
+
+* The [`shim`](http://www.requirejs.org/docs/api.html#config-shim) configuration
+option allows dependencies and exports for scripts that don't explicitly provide
+RequireJS support.
+* The `component-baseurl` config variable allows alteration of the
+[baseUrl](http://requirejs.org/docs/api.html#config-baseUrl) configuration for
+the scripts. This will change the base URL used when loading the scripts.
+
 Todo
 ----
 
 * Put together a list of Components that make use of Component Installer
-* Provide the shim information for repositories that don't use require.js
-* Determine if "scripts" is handled correctly, or if it should use "main"
+* Compile the RequireJS configuration (`require.min.js` possibly?)
+* Determine if "scripts" is handled correctly, or if it should just use "main"
 
 License
 -------

@@ -12,6 +12,7 @@
 namespace ComponentInstaller;
 
 use Composer\Composer;
+use Composer\Config;
 use Composer\IO\IOInterface;
 use Composer\Package\PackageInterface;
 use Composer\Installer\LibraryInstaller;
@@ -26,9 +27,8 @@ class Installer extends LibraryInstaller
     /**
      * Retrieves the Component Directory from a Composer object.
      */
-    public static function getConfigOption(Composer $composer, $option, $default = null)
+    public static function getConfigOption(Config $config, $option, $default = null)
     {
-        $config = $composer->getConfig();
         return $config->has($option) ? $config->get($option) : $default;
     }
 
@@ -43,7 +43,7 @@ class Installer extends LibraryInstaller
         $name = static::getComponentName($prettyName, $extra);
 
         // Get the components directory.
-        $componentDir = static::getConfigOption($this->composer, 'component-dir', 'components');
+        $componentDir = static::getConfigOption($this->composer->getConfig(), 'component-dir', 'components');
 
         // Register the post-install/update scripts.
         $this->setUpScripts($this->composer->getPackage());
@@ -54,7 +54,8 @@ class Installer extends LibraryInstaller
     /**
      * Retrieves the component name for the component.
      */
-    public static function getComponentName($prettyName, $extra) {
+    public static function getComponentName($prettyName, $extra)
+    {
         // Parse the pretty name for the vendor and name.
         if (strpos($prettyName, '/') !== false) {
             list($vendor, $name) = explode('/', $prettyName);
@@ -94,13 +95,14 @@ class Installer extends LibraryInstaller
         $locker = $composer->getLocker();
         $lockData = $locker->getLockData();
         $packages = $lockData['packages'];
-        $io->write('<info>Setting up require.js configuration</info>');
+        $io->write('<info>Building require.js</info>');
 
         // Figure out where all Components should be installed.
-        $destination = static::getConfigOption($composer, 'component-dir', 'components');
+        $destination = static::getConfigOption($composer->getConfig(), 'component-dir', 'components');
 
         // Construct the require.js and stick it in the destination.
-        $config = static::requireJs($packages, $composer);
+        $json = static::requireJson($packages, $composer->getConfig());
+        $config = static::requireJs($json);
         if (file_put_contents($destination . '/require.config.js', $config) === FALSE) {
             $io->write('<error>Error writing require.config.js</error>');
             return false;
@@ -123,7 +125,8 @@ class Installer extends LibraryInstaller
     /**
      * Sets up the post-install and post-update scripts for a package.
      */
-    protected function setUpScripts($rootPackage) {
+    protected function setUpScripts($rootPackage)
+    {
         // Only act on the root package if it exists.
         if ($rootPackage) {
             $scripts = $rootPackage->getScripts();
@@ -135,15 +138,20 @@ class Installer extends LibraryInstaller
 
     /**
      * Creates a require.js configuration from an array of packages.
+     *
+     * @param $packages
+     *   An array of packages from the composer.lock file.
+     * @param $config
+     *   The Composer Config object.
      */
-    public static function requireJs($packages, $composer)
+    public static function requireJson(array $packages, Config $config)
     {
         $json = array();
-        $componentDir = static::getConfigOption($composer, 'component-dir', 'components');
+        $componentDir = static::getConfigOption($config, 'component-dir', 'components');
 
         // Construct the packages configuration.
         foreach ($packages as $package) {
-            if ($package['type'] == 'component') {
+            if (isset($package['type']) && $package['type'] == 'component') {
                 // Retrieve information from the extra options.
                 $extra = isset($package['extra']) ? $package['extra'] : array();
                 $options = isset($extra['component']) ? $extra['component'] : array();
@@ -159,24 +167,39 @@ class Installer extends LibraryInstaller
                     $component['main'] = $scripts[0];
                 }
 
-                // @todo Create the shim definitions.
-
                 // Add the package to the scripts.
                 $json['packages'][] = $component;
+
+                // Add the shim definition.
+                $shim = isset($options['shim']) ? $options['shim'] : array();
+                if (!empty($shim)) {
+                    $json['shim'][$name] = $shim;
+                }
             }
         }
 
         // Provide the baseUrl if it's available.
-        if ($baseUrl = static::getConfigOption($composer, 'component-baseurl')) {
+        if ($baseUrl = static::getConfigOption($config, 'component-baseurl')) {
             $json['baseUrl'] = $baseUrl;
         }
 
-        // Create the components RequireJS definition.
-        $json = JsonFile::encode($json);
+        return $json;
+    }
+
+    /**
+     * Constructs the require.js file from the provided require.js JSON array.
+     *
+     * @param $json
+     *   The require.js JSON configuration.
+     */
+    public static function requireJs(array $json = array())
+    {
+        // Encode the array to a JSON array.
+        $js = JsonFile::encode($json);
 
         // Construct the JavaScript output.
         $output = <<<EOT
-var components = $json;
+var components = $js;
 if (typeof require !== "undefined" && require.config) {
     require.config(components);
 }
@@ -187,6 +210,7 @@ if (typeof exports !== "undefined" && typeof module !== "undefined") {
     module.exports = components;
 }
 EOT;
+
         return $output;
     }
 }

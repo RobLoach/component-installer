@@ -111,4 +111,210 @@ class InstallerTest extends LibraryInstallerTest
 
         return $tests;
     }
+
+    /**
+     * testGetConfigOption
+     *
+     * @dataProvider providerGetConfigOption
+     */
+    function testGetConfigOption(array $config, $option, $default = null, $expected = null)
+    {
+        $configObject = new Config();
+        $configObject->merge(array('config' => $config));
+        $result = Installer::getConfigOption($configObject, $option, $default);
+        $this->assertEquals($result, $expected, sprintf('Fail to get proper config options for %s', $option));
+    }
+
+    /**
+     * providerGetConfigOption
+     *
+     * @see testGetConfigOption()
+     */
+    function providerGetConfigOption()
+    {
+        // Get no option.
+        $tests[] = array(array('not-wanted' => 3), 'get-no-option');
+        // Retrieve the default value.
+        $tests[] = array(array(), 'get-default-option', 'default', 'default');
+        // Retrieve the correct value.
+        $tests[] = array(array('wanted' => 123), 'wanted', 500, 123);
+
+        return $tests;
+    }
+
+    /**
+     * testRequireJs
+     *
+     * @dataProvider providerRequireJs
+     */
+    function testRequireJs(array $packages, array $config, $expected = null)
+    {
+        $configObject = new Config();
+        $configObject->merge(array('config' => $config));
+        $result = Installer::requireJson($packages, $configObject);
+        $this->assertEquals($result, $expected, sprintf('Fail to get proper expected require.js configuration'));
+    }
+
+    function providerRequireJs()
+    {
+        // Test a package that doesn't have any extra information.
+        $packageWithoutExtra = array(
+            'name' => 'components/packagewithoutextra',
+            'type' => 'component',
+        );
+        $packages = array($packageWithoutExtra);
+        $expected = array(
+            'packages' => array(
+                array(
+                    'name' => 'packagewithoutextra',
+                    'location' => 'components/packagewithoutextra',
+                ),
+            ),
+        );
+        $tests[] = array($packages, array(), $expected);
+
+        // Test switching the component directory.
+        $packages = array($packageWithoutExtra);
+        $expected = array(
+            'packages' => array(
+                array(
+                    'name' => 'packagewithoutextra',
+                    'location' => 'otherdir/packagewithoutextra',
+                ),
+            ),
+        );
+        $tests[] = array($packages, array('component-dir' => 'otherdir'), $expected);
+
+        // Test switching the baseUrl.
+        $packages = array($packageWithoutExtra);
+        $expected = array(
+            'packages' => array(
+                array(
+                    'name' => 'packagewithoutextra',
+                    'location' => 'components/packagewithoutextra',
+                ),
+            ),
+            'baseUrl' => '/another/path',
+        );
+        $tests[] = array($packages, array('component-baseurl' => '/another/path'), $expected);
+
+        // Test a package with just Scripts.
+        $jquery = array(
+            'name' => 'components/jquery',
+            'type' => 'component',
+            'extra' => array(
+                'component' => array(
+                    'scripts' => array(
+                        'jquery.js'
+                    )
+                )
+            )
+        );
+        $packages = array($jquery);
+        $expected = array(
+            'packages' => array(
+                array(
+                    'name' => 'jquery',
+                    'location' => 'components/jquery',
+                    'main' => 'jquery.js',
+                ),
+            ),
+        );
+        $tests[] = array($packages, array(), $expected);
+
+        // Test a pckage with just shim information.
+        $underscore = array(
+            'name' => 'components/underscore',
+            'type' => 'component',
+            'extra' => array(
+                'component' => array(
+                    'shim' => array(
+                        'exports' => '_',
+                    ),
+                ),
+            ),
+        );
+        $packages = array($underscore);
+        $expected = array(
+            'packages' => array(
+                array(
+                    'name' => 'underscore',
+                    'location' => 'components/underscore',
+                ),
+            ),
+            'shim' => array(
+                'underscore' => array(
+                    'exports' => '_',
+                ),
+            ),
+        );
+        $tests[] = array($packages, array(), $expected);
+
+        // Test a package the has everything.
+        $backbone = array(
+            'name' => 'components/backbone',
+            'type' => 'component',
+            'extra' => array(
+                'component' => array(
+                    'scripts' => array(
+                        'backbone.js'
+                    ),
+                    'shim' => array(
+                        'exports' => 'Backbone',
+                        'deps' => array(
+                            'underscore',
+                            'jquery'
+                        ),
+                    ),
+                ),
+            ),
+        );
+        $packages = array($backbone);
+        $expected = array(
+            'packages' => array(
+                array(
+                    'name' => 'backbone',
+                    'location' => 'components/backbone',
+                    'main' => 'backbone.js',
+                ),
+            ),
+            'shim' => array(
+                'backbone' => array(
+                    'exports' => 'Backbone',
+                    'deps' => array(
+                        'underscore',
+                        'jquery'
+                    ),
+                ),
+            ),
+        );
+        $tests[] = array($packages, array(), $expected);
+
+        return $tests;
+    }
+
+    /**
+     * testGetComponentName
+     *
+     * @dataProvider providerGetComponentName
+     */
+    function testGetComponentName($prettyName, array $extra, $expected)
+    {
+        $result = Installer::getComponentName($prettyName, array('component' => $extra));
+        $this->assertEquals($result, $expected, sprintf('Fail to get proper component name for %s', $prettyName));
+    }
+
+    /**
+     * Data provider for testGetComponentName.
+     *
+     * @see testGetComponentName()
+     */
+    function providerGetComponentName()
+    {
+        return array(
+            array('components/jquery', array(), 'jquery'),
+            array('components/jquery', array('name' => 'myownjquery'), 'myownjquery'),
+            array('jquery', array(), 'jquery'),
+        );
+    }
 }
