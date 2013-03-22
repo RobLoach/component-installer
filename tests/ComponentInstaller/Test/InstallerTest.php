@@ -167,9 +167,9 @@ class InstallerTest extends LibraryInstallerTest
             'packages' => array(
                 array(
                     'name' => 'packagewithoutextra',
-                    'location' => 'components/packagewithoutextra',
                 ),
             ),
+            'baseUrl' => 'components',
         );
         $tests[] = array($packages, array(), $expected);
 
@@ -179,9 +179,9 @@ class InstallerTest extends LibraryInstallerTest
             'packages' => array(
                 array(
                     'name' => 'packagewithoutextra',
-                    'location' => 'otherdir/packagewithoutextra',
                 ),
             ),
+            'baseUrl' => 'components',
         );
         $tests[] = array($packages, array('component-dir' => 'otherdir'), $expected);
 
@@ -191,7 +191,6 @@ class InstallerTest extends LibraryInstallerTest
             'packages' => array(
                 array(
                     'name' => 'packagewithoutextra',
-                    'location' => 'components/packagewithoutextra',
                 ),
             ),
             'baseUrl' => '/another/path',
@@ -215,10 +214,10 @@ class InstallerTest extends LibraryInstallerTest
             'packages' => array(
                 array(
                     'name' => 'jquery',
-                    'location' => 'components/jquery',
                     'main' => 'jquery.js',
                 ),
             ),
+            'baseUrl' => 'components',
         );
         $tests[] = array($packages, array(), $expected);
 
@@ -239,7 +238,6 @@ class InstallerTest extends LibraryInstallerTest
             'packages' => array(
                 array(
                     'name' => 'underscore',
-                    'location' => 'components/underscore',
                 ),
             ),
             'shim' => array(
@@ -247,6 +245,7 @@ class InstallerTest extends LibraryInstallerTest
                     'exports' => '_',
                 ),
             ),
+            'baseUrl' => 'components',
         );
         $tests[] = array($packages, array(), $expected);
 
@@ -274,7 +273,6 @@ class InstallerTest extends LibraryInstallerTest
             'packages' => array(
                 array(
                     'name' => 'backbone',
-                    'location' => 'components/backbone',
                     'main' => 'backbone.js',
                 ),
             ),
@@ -287,6 +285,7 @@ class InstallerTest extends LibraryInstallerTest
                     ),
                 ),
             ),
+            'baseUrl' => 'components',
         );
         $tests[] = array($packages, array(), $expected);
 
@@ -316,5 +315,20 @@ class InstallerTest extends LibraryInstallerTest
             array('components/jquery', array('name' => 'myownjquery'), 'myownjquery'),
             array('jquery', array(), 'jquery'),
         );
+    }
+
+    /**
+     * Tests setting up the root package scripts.
+     */
+    public function testSetUpScripts()
+    {
+        $installer = new Installer($this->io, $this->composer, 'component');
+        $package = new RootPackage('foo/bar', '1.0.0', '1.0.0');
+        $installer->setUpScripts($package);
+        $scripts = $package->getScripts();
+        $result = isset($scripts['post-install-cmd']['component-installer']) ? $scripts['post-install-cmd']['component-installer'] : FALSE;
+        $this->assertEquals($result, 'ComponentInstaller\\Installer::postInstall', 'The postInstall script handler is registered on install.');
+        $result = isset($scripts['post-update-cmd']['component-installer']) ? $scripts['post-update-cmd']['component-installer'] : FALSE;
+        $this->assertEquals($result, 'ComponentInstaller\\Installer::postInstall', 'The postInstall script handler is registered on update.');
     }
 }

@@ -6,9 +6,9 @@ Allows installation of Components via [Composer](http://getcomposer.org).
 Usage
 -----
 
-To install a Component with Composer, add the Component to your `composer.json`
+To install a Component with Composer, add the Component to your *composer.json*
 `require` key. The following will install [jQuery](http://jquery.com), with
-Component Installer, into `components/jquery`:
+Component Installer, into *components/jquery*:
 
 ``` json
 {
@@ -41,14 +41,14 @@ for you, which allows autoloading the scripts only when required:
 </html>
 ```
 
-Although this is completely optional, you can still load the global script if
-desired. In this example, jQuery would be at `components/jquery/jquery.js`.
+It is still possible to load using normal script tags. In this example, jQuery
+would be at *components/jquery/jquery.js*.
 
 ### Creating a Component
 
 To set up a Component to be installed with Component Installer, have it
-`require` the package `robloach/component-installer` and set the `type` to
-`component`:
+`require` the package *robloach/component-installer* and set the `type` to
+*component*:
 
 ``` json
 {
@@ -69,10 +69,9 @@ To set up a Component to be installed with Component Installer, have it
 
 ### Installation Directory
 
-By default, Components will be installed to the `components` directory, but this
-can be overriden by using `component-dir` in `config` of the root package. The
-following will install jQuery to `public/jquery` rather than
-`components/jquery`:
+It is posssible to switch where Components are installed by changing the
+`component-dir` option in your root *composer.json*'s `config`. The following
+will install jQuery to *public/jquery* rather than *components/jquery*:
 
 ``` json
 {
@@ -85,10 +84,35 @@ following will install jQuery to `public/jquery` rather than
 }
 ```
 
+Defaults to `components`.
+
+### Base URL
+
+While `component-dir` depicts where the components will be installed,
+`component-baseurl` tells RequireJS the base path that will use when attempting
+to load the scripts in the web browser. It is important to make sure the
+`component-baseurl` points to the `component-dir` when loaded externally. You
+can read more about [`baseUrl`](http://requirejs.org/docs/api.html#config-baseUrl)
+in the RequireJS documentation.
+
+``` json
+{
+    "require": {
+        "components/jquery": "*"
+    },
+    "config": {
+        "component-dir": "public/assets",
+        "component-baseurl": "/assets"
+    }
+}
+```
+
+Defaults to `components`.
+
 ### Component Name
 
-Components can override their own component name. The following will install
-jQuery to `components/myownjquery` rather than `components/jquery`:
+Components can provide their own component name. The following will install
+jQuery to *components/myownjquery* rather than *components/jquery*:
 
 ``` json
 {
@@ -104,8 +128,10 @@ jQuery to `components/myownjquery` rather than `components/jquery`:
 
 ### RequireJS Configuration
 
-Components can specify how [RequireJS](http://requirejs.org) registers and
-interacts with them:
+Components can alter how [RequireJS](http://requirejs.org) registers and
+interacts with them. Currently, only the
+[`shim`](http://www.requirejs.org/docs/api.html#config-shim) configuration is
+available, but additional options will become available soon:
 
 ``` json
 {
@@ -121,26 +147,34 @@ interacts with them:
                 "exports": "Backbone"
             }
         }
-    },
-    "config": {
-        "component-baseurl": "/another/path"
     }
 }
 ```
 
-* The [`shim`](http://www.requirejs.org/docs/api.html#config-shim) configuration
-option allows dependencies and exports for scripts that don't explicitly provide
-RequireJS support.
-* The `component-baseurl` config variable allows alteration of the
-[baseUrl](http://requirejs.org/docs/api.html#config-baseUrl) configuration for
-the scripts. This will change the base URL used when loading the scripts.
+Not Invented Here
+-----------------
+
+There are many other amazing projects from which Component Installer was
+inspired. Many are much more mature than this one. It is encouraged to take a
+look at some of the [other great package management systems](http://github.com/wilmoore/frontend-packagers):
+* [npm](http://npmjs.org)
+* [bower](http://twitter.github.com/bower/)
+* [component](http://github.com/component/component)
+* [Jam](http://jamjs.org)
+* [volo](http://volojs.org)
+* [Ender](http://ender.jit.su)
+* etc
 
 Todo
 ----
 
+* More [RequireJS Configurations](http://www.requirejs.org/docs/api.html#config)
 * Put together a list of Components that make use of Component Installer
-* Compile the RequireJS configuration (`require.min.js` possibly?)
-* Determine if "scripts" is handled correctly, or if it should just use "main"
+* Compile all the components into one file (`require.min.js`?)
+* Determine if `scripts` is named correctly, or if it should just use `main`
+* Aggregate all `styles` together into one *require.css*
+* Determine if `component-baseurl` is the correct name for it
+* Install to `components/[vendor]-[package]` rather than `components/[package]`?
 
 License
 -------

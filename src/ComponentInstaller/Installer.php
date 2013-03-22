@@ -125,7 +125,7 @@ class Installer extends LibraryInstaller
     /**
      * Sets up the post-install and post-update scripts for a package.
      */
-    protected function setUpScripts($rootPackage)
+    public function setUpScripts($rootPackage)
     {
         // Only act on the root package if it exists.
         if ($rootPackage) {
@@ -159,7 +159,6 @@ class Installer extends LibraryInstaller
                 // Construct the base details.
                 $name = static::getComponentName($package['name'], $extra);
                 $component['name'] = $name;
-                $component['location'] = $componentDir . DIRECTORY_SEPARATOR . $name;
 
                 // Build the "main" directive.
                 $scripts = isset($options['scripts']) ? $options['scripts'] : array();
@@ -179,7 +178,7 @@ class Installer extends LibraryInstaller
         }
 
         // Provide the baseUrl if it's available.
-        if ($baseUrl = static::getConfigOption($config, 'component-baseurl')) {
+        if ($baseUrl = static::getConfigOption($config, 'component-baseurl', 'components')) {
             $json['baseUrl'] = $baseUrl;
         }
 
