@@ -37,9 +37,9 @@
 
 <h2>Usage</h2>
 
-<p>To install a Component with Composer, add the Component to your <code>composer.json</code>
+<p>To install a Component with Composer, add the Component to your <em>composer.json</em>
 <code>require</code> key. The following will install <a href="http://jquery.com">jQuery</a>, with
-Component Installer, into <code>components/components-jquery</code>:</p>
+Component Installer, into <em>components/jquery</em>:</p>
 
 <div class="highlight"><pre><span class="p">{</span>
     <span class="nt">"require"</span><span class="p">:</span> <span class="p">{</span>
@@ -48,25 +48,58 @@ Component Installer, into <code>components/components-jquery</code>:</p>
 <span class="p">}</span>
 </pre></div>
 
+<h3>Using the Component</h3>
+
+<p>Component Installer will build a <a href="http://requirejs.org">RequireJS</a> configuration
+for you, which allows autoloading the scripts only when required:</p>
+
+<div class="highlight"><pre><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+    <span class="nt">&lt;head&gt;</span>
+        <span class="nt">&lt;title&gt;</span>jQuery+RequireJS Component Installer Sample<span class="nt">&lt;/title&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"components/require.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;/head&gt;</span>
+    <span class="nt">&lt;body&gt;</span>
+        <span class="nt">&lt;h1&gt;</span>jQuery+RequireJS Component Installer Sample Page<span class="nt">&lt;/h1&gt;</span>
+        <span class="nt">&lt;script&gt;</span>
+          <span class="nx">require</span><span class="p">([</span><span class="s1">'jquery'</span><span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">$</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">$</span><span class="p">(</span><span class="s1">'body'</span><span class="p">).</span><span class="nx">css</span><span class="p">(</span><span class="s1">'background-color'</span><span class="p">,</span> <span class="s1">'green'</span><span class="p">);</span>
+          <span class="p">});</span>
+        <span class="nt">&lt;/script&gt;</span>
+    <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+
+<p>It is still possible to load using normal script tags. In this example, jQuery
+would be at <em>components/jquery/jquery.js</em>.</p>
+
+<h3>Creating a Component</h3>
+
 <p>To set up a Component to be installed with Component Installer, have it
-<code>require</code> the package <code>robloach/component-installer</code> and set the <code>type</code> to
-<code>component</code>:</p>
+<code>require</code> the package <em>robloach/component-installer</em> and set the <code>type</code> to
+<em>component</em>:</p>
 
 <div class="highlight"><pre><span class="p">{</span>
     <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"components/jquery"</span><span class="p">,</span>
     <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"component"</span><span class="p">,</span>
     <span class="nt">"require"</span><span class="p">:</span> <span class="p">{</span>
         <span class="nt">"robloach/component-installer"</span><span class="p">:</span> <span class="s2">"*"</span>
+    <span class="p">},</span>
+    <span class="nt">"extra"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"component"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">"scripts"</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">"jquery.js"</span>
+            <span class="p">]</span>
+        <span class="p">}</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 
 <h3>Installation Directory</h3>
 
-<p>By default, Components will be installed to the <code>components</code> directory, but this
-can be overriden by using <code>component-dir</code> in <code>config</code> of the root package. The
-following will install jQuery to <code>public/components-jquery</code> rather than
-<code>components/components-jquery</code>:</p>
+<p>It is posssible to switch where Components are installed by changing the
+<code>component-dir</code> option in your root <em>composer.json</em>'s <code>config</code>. The following
+will install jQuery to <em>public/jquery</em> rather than <em>components/jquery</em>:</p>
 
 <div class="highlight"><pre><span class="p">{</span>
     <span class="nt">"require"</span><span class="p">:</span> <span class="p">{</span>
@@ -78,27 +111,97 @@ following will install jQuery to <code>public/components-jquery</code> rather th
 <span class="p">}</span>
 </pre></div>
 
+<p>Defaults to <code>components</code>.</p>
+
+<h3>Base URL</h3>
+
+<p>While <code>component-dir</code> depicts where the components will be installed,
+<code>component-baseurl</code> tells RequireJS the base path that will use when attempting
+to load the scripts in the web browser. It is important to make sure the
+<code>component-baseurl</code> points to the <code>component-dir</code> when loaded externally. You
+can read more about <a href="http://requirejs.org/docs/api.html#config-baseUrl"><code>baseUrl</code></a>
+in the RequireJS documentation.</p>
+
+<div class="highlight"><pre><span class="p">{</span>
+    <span class="nt">"require"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"components/jquery"</span><span class="p">:</span> <span class="s2">"*"</span>
+    <span class="p">},</span>
+    <span class="nt">"config"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"component-dir"</span><span class="p">:</span> <span class="s2">"public/assets"</span><span class="p">,</span>
+        <span class="nt">"component-baseurl"</span><span class="p">:</span> <span class="s2">"/assets"</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Defaults to <code>components</code>.</p>
+
 <h3>Component Name</h3>
 
-<p>Components can override their own component name. The following will install
-jQuery to <code>components/myownjquery</code> rather than <code>components/components-jquery</code>:</p>
+<p>Components can provide their own component name. The following will install
+jQuery to <em>components/myownjquery</em> rather than <em>components/jquery</em>:</p>
 
 <div class="highlight"><pre><span class="p">{</span>
     <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"components/jquery"</span><span class="p">,</span>
     <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"component"</span><span class="p">,</span>
     <span class="nt">"extra"</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">"component-name"</span><span class="p">:</span> <span class="s2">"myownjquery"</span>
+        <span class="nt">"component"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"myownjquery"</span>
+        <span class="p">}</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 
-<h2>Todo</h2>
+<h3>RequireJS Configuration</h3>
+
+<p>Components can alter how <a href="http://requirejs.org">RequireJS</a> registers and
+interacts with them. Currently, only the
+<a href="http://www.requirejs.org/docs/api.html#config-shim"><code>shim</code></a> configuration is
+available, but additional options will become available soon:</p>
+
+<div class="highlight"><pre><span class="p">{</span>
+    <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"components/backbone"</span><span class="p">,</span>
+    <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"component"</span><span class="p">,</span>
+    <span class="nt">"require"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"components/underscore"</span><span class="p">:</span> <span class="s2">"*"</span>
+    <span class="p">},</span>
+    <span class="nt">"extra"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">"component"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">"shim"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="nt">"deps"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"underscore"</span><span class="p">,</span> <span class="s2">"jquery"</span><span class="p">],</span>
+                <span class="nt">"exports"</span><span class="p">:</span> <span class="s2">"Backbone"</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<h2>Not Invented Here</h2>
+
+<p>There are many other amazing projects from which Component Installer was
+inspired. Many are much more mature than this one. It is encouraged to take a
+look at some of the <a href="http://github.com/wilmoore/frontend-packagers">other great package management systems</a>:</p>
 
 <ul>
-<li>Put together a list of Components that make use of Component Installer</li>
-<li>Read some of the information from <code>component.json</code>
+<li><a href="http://npmjs.org">npm</a></li>
+<li><a href="http://twitter.github.com/bower/">bower</a></li>
+<li><a href="http://github.com/component/component">component</a></li>
+<li><a href="http://jamjs.org">Jam</a></li>
+<li><a href="http://volojs.org">volo</a></li>
+<li><a href="http://ender.jit.su">Ender</a></li>
+<li>etc</li>
+</ul><h2>Todo</h2>
+
+<ul>
+<li>More <a href="http://www.requirejs.org/docs/api.html#config">RequireJS Configurations</a>
 </li>
-<li>Set up a <a href="http://requirejs.org">RequireJS</a> config for installed components</li>
+<li>Put together a list of Components that make use of Component Installer</li>
+<li>Compile all the components into one file (<code>require.min.js</code>?)</li>
+<li>Determine if <code>scripts</code> is named correctly, or if it should just use <code>main</code>
+</li>
+<li>Aggregate all <code>styles</code> together into one <em>require.css</em>
+</li>
+<li>Determine if <code>component-baseurl</code> is the correct name for it</li>
+<li>Install to <code>components/[vendor]-[package]</code> rather than <code>components/[package]</code>?</li>
 </ul><h2>License</h2>
 
 <p>Component Installer is licensed under the MIT License - see the LICENSE file
