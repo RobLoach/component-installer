@@ -15,6 +15,6 @@ error_reporting(E_ALL);
 $loader = require __DIR__ . '/../src/bootstrap.php';
 $loader->add('ComponentInstaller\Test', __DIR__);
 
-// Also allow the Composer Test namespace.
+// Also register the Composer\Test namespace.
 $path = $loader->findFile('Composer\\Composer');
 $loader->add('Composer\Test', dirname(dirname(dirname($path))) . '/tests');

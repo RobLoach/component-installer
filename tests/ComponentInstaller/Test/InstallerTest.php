@@ -15,8 +15,6 @@ use Composer\Test\Installer\LibraryInstallerTest;
 use ComponentInstaller\Installer;
 use Composer\Package\Package;
 use Composer\Package\RootPackage;
-use Composer\Util\Filesystem;
-use Composer\Test\TestCase;
 use Composer\Composer;
 use Composer\Config;
 
@@ -49,7 +47,7 @@ class InstallerTest extends LibraryInstallerTest
      *
      * @see testComponentSupports()
      */
-    function providerComponentSupports()
+    public function providerComponentSupports()
     {
         $tests[] = array('component', true);
         $tests[] = array('not-a-component', false);
@@ -117,7 +115,7 @@ class InstallerTest extends LibraryInstallerTest
      *
      * @dataProvider providerGetConfigOption
      */
-    function testGetConfigOption(array $config, $option, $default = null, $expected = null)
+    public function testGetConfigOption(array $config, $option, $default = null, $expected = null)
     {
         $configObject = new Config();
         $configObject->merge(array('config' => $config));
@@ -130,7 +128,7 @@ class InstallerTest extends LibraryInstallerTest
      *
      * @see testGetConfigOption()
      */
-    function providerGetConfigOption()
+    public function providerGetConfigOption()
     {
         // Get no option.
         $tests[] = array(array('not-wanted' => 3), 'get-no-option');
@@ -147,7 +145,7 @@ class InstallerTest extends LibraryInstallerTest
      *
      * @dataProvider providerRequireJs
      */
-    function testRequireJs(array $packages, array $config, $expected = null)
+    public function testRequireJs(array $packages, array $config, $expected = null)
     {
         $configObject = new Config();
         $configObject->merge(array('config' => $config));
@@ -155,7 +153,7 @@ class InstallerTest extends LibraryInstallerTest
         $this->assertEquals($result, $expected, sprintf('Fail to get proper expected require.js configuration'));
     }
 
-    function providerRequireJs()
+    public function providerRequireJs()
     {
         // Test a package that doesn't have any extra information.
         $packageWithoutExtra = array(
@@ -289,6 +287,60 @@ class InstallerTest extends LibraryInstallerTest
         );
         $tests[] = array($packages, array(), $expected);
 
+        // Test multiple packages.
+        $packages = array($backbone, $jquery);
+        $expected = array(
+            'packages' => array(
+                array(
+                    'name' => 'backbone',
+                    'main' => 'backbone.js',
+                ),
+                array(
+                    'name' => 'jquery',
+                    'main' => 'jquery.js',
+                ),
+            ),
+            'shim' => array(
+                'backbone' => array(
+                    'exports' => 'Backbone',
+                    'deps' => array(
+                        'underscore',
+                        'jquery'
+                    ),
+                ),
+            ),
+            'baseUrl' => 'components',
+        );
+        $tests[] = array($packages, array(), $expected);
+
+        // Package with a config definition.
+        $packageWithConfig = array(
+            'name' => 'components/packagewithconfig',
+            'type' => 'component',
+            'extra' => array(
+                'component' => array(
+                    'config' => array(
+                        'color' => 'blue',
+                    ),
+                ),
+            ),
+        );
+        $packages = array($packageWithConfig);
+        $expected = array(
+            'packages' => array(
+                array(
+                    'name' => 'packagewithconfig',
+                ),
+            ),
+            'config' => array(
+                'packagewithconfig' => array(
+                    'color' => 'blue',
+                ),
+            ),
+            'baseUrl' => 'components',
+        );
+        $tests[] = array($packages, array(), $expected);
+
         return $tests;
     }
 
@@ -297,7 +349,7 @@ class InstallerTest extends LibraryInstallerTest
      *
      * @dataProvider providerGetComponentName
      */
-    function testGetComponentName($prettyName, array $extra, $expected)
+    public function testGetComponentName($prettyName, array $extra, $expected)
     {
         $result = Installer::getComponentName($prettyName, array('component' => $extra));
         $this->assertEquals($result, $expected, sprintf('Fail to get proper component name for %s', $prettyName));
@@ -308,7 +360,7 @@ class InstallerTest extends LibraryInstallerTest
      *
      * @see testGetComponentName()
      */
-    function providerGetComponentName()
+    public function providerGetComponentName()
     {
         return array(
             array('components/jquery', array(), 'jquery'),

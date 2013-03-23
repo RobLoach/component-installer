@@ -129,9 +129,7 @@ jQuery to *components/myownjquery* rather than *components/jquery*:
 ### RequireJS Configuration
 
 Components can alter how [RequireJS](http://requirejs.org) registers and
-interacts with them. Currently, only the
-[`shim`](http://www.requirejs.org/docs/api.html#config-shim) configuration is
-available, but additional options will become available soon:
+interacts with them:
 
 ``` json
 {
@@ -145,11 +143,72 @@ available, but additional options will become available soon:
             "shim": {
                 "deps": ["underscore", "jquery"],
                 "exports": "Backbone"
+            },
+            "config": {
+                "color": "blue"
             }
         }
     }
 }
 ```
+
+Current available RequireJS options include:
+* [`shim`](http://www.requirejs.org/docs/api.html#config-shim)
+* [`config`](http://www.requirejs.org/docs/api.html#config-moduleconfig)
+
+### Packages Without Composer Support
+
+Using [`repositories`](http://getcomposer.org/doc/05-repositories.md#repositories)
+in *composer.json* allows the use of Component Installer in packages that don't
+explicitly provide their own *composer.json* information. In the following
+example, we define use of [html5shiv](https://github.com/aFarkas/html5shiv):
+
+``` json
+{
+    "require": {
+        "afarkas/html5shiv": ">=3.6.2"
+    },
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "afarkas/html5shiv",
+                "type": "component",
+                "version": "3.6.2",
+                "dist": {
+                    "url": "https://github.com/aFarkas/html5shiv/archive/3.6.2.zip",
+                    "type": "zip"
+                },
+                "source": {
+                    "url": "https://github.com/aFarkas/html5shiv.git",
+                    "type": "git",
+                    "reference": "3.6.2"
+                },
+                "component": {
+                    "scripts": [
+                        "dist/html5shiv.js"
+                    ]
+                },
+                "require": {
+                    "robloach/component-installer": "*"
+                }
+            }
+        }
+    ],
+    "minimum-stability": "dev"
+}
+```
+
+Todo
+----
+
+* More [RequireJS Configurations](http://www.requirejs.org/docs/api.html#config)
+* Put together a list of Components that make use of Component Installer
+* Compile all the components into one file (`require.min.js`?)
+* Determine if `scripts` is named correctly, or if it should just use `main`
+* Aggregate all `styles` together into one *require.css*
+* Determine if `component-baseurl` is the correct name for it
+* Install to `components/[vendor]-[package]` rather than `components/[package]`?
 
 Not Invented Here
 -----------------
@@ -164,17 +223,6 @@ look at some of the [other great package management systems](http://github.com/w
 * [volo](http://volojs.org)
 * [Ender](http://ender.jit.su)
 * etc
-
-Todo
-----
-
-* More [RequireJS Configurations](http://www.requirejs.org/docs/api.html#config)
-* Put together a list of Components that make use of Component Installer
-* Compile all the components into one file (`require.min.js`?)
-* Determine if `scripts` is named correctly, or if it should just use `main`
-* Aggregate all `styles` together into one *require.css*
-* Determine if `component-baseurl` is the correct name for it
-* Install to `components/[vendor]-[package]` rather than `components/[package]`?
 
 License
 -------

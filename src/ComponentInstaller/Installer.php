@@ -13,7 +13,6 @@ namespace ComponentInstaller;
 
 use Composer\Composer;
 use Composer\Config;
-use Composer\IO\IOInterface;
 use Composer\Package\PackageInterface;
 use Composer\Installer\LibraryInstaller;
 use Composer\Script\Event;
@@ -78,7 +77,7 @@ class Installer extends LibraryInstaller
      */
     public function supports($packageType)
     {
-        return (bool)($packageType === 'component');
+        return (bool) ($packageType === 'component');
     }
 
     /**
@@ -105,6 +104,7 @@ class Installer extends LibraryInstaller
         $config = static::requireJs($json);
         if (file_put_contents($destination . '/require.config.js', $config) === FALSE) {
             $io->write('<error>Error writing require.config.js</error>');
+
             return false;
         }
 
@@ -112,12 +112,14 @@ class Installer extends LibraryInstaller
         $requirejs = file_get_contents(__DIR__ . '/Resources/require.js');
         if ($requirejs === FALSE) {
             $io->write('<error>Error reading in require.js</error>');
+
             return false;
         }
 
         // Append the config to the require.js and write it.
         if (file_put_contents($destination . '/require.js', $requirejs . $config) === FALSE) {
             $io->write('<error>Error writing require.js to destination</error>');
+
             return false;
         }
     }
@@ -174,6 +176,12 @@ class Installer extends LibraryInstaller
                 if (!empty($shim)) {
                     $json['shim'][$name] = $shim;
                 }
+
+                // Add the config definition.
+                $packageConfig = isset($options['config']) ? $options['config'] : array();
+                if (!empty($packageConfig)) {
+                    $json['config'][$name] = $packageConfig;
+                }
             }
         }
 
@@ -201,8 +209,7 @@ class Installer extends LibraryInstaller
 var components = $js;
 if (typeof require !== "undefined" && require.config) {
     require.config(components);
-}
-else {
+} else {
     var require = components;
 }
 if (typeof exports !== "undefined" && typeof module !== "undefined") {
