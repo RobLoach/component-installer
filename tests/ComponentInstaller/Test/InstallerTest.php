@@ -383,4 +383,73 @@ class InstallerTest extends LibraryInstallerTest
         $result = isset($scripts['post-update-cmd']['component-installer']) ? $scripts['post-update-cmd']['component-installer'] : FALSE;
         $this->assertEquals($result, 'ComponentInstaller\\Installer::postInstall', 'The postInstall script handler is registered on update.');
     }
+
+    /**
+     * testPackageStyles
+     *
+     * @dataProvider providerPackageStyles
+     */
+    public function testPackageStyles(array $packages, array $config, $expected = null)
+    {
+        $configObject = new Config();
+        $configObject->merge(array('config' => $config));
+        $result = Installer::packageStyles($packages, $configObject);
+        $this->assertEquals($result, $expected, sprintf('Fail to get proper expected require.css content'));
+    }
+
+    public function providerPackageStyles()
+    {
+        // Test collecting one style.
+        $package = array(
+            'name' => 'components/package',
+            'type' => 'component',
+            'extra' => array(
+                'component' => array(
+                    'styles' => array(
+                        __DIR__ . '/Resources/test.css',
+                    ),
+                ),
+            ),
+        );
+        $packages = array($package);
+        $expected = array(__DIR__ . '/Resources/test.css');
+        $tests[] = array($packages, array(), $expected);
+
+        // Test collecting a style that doesn't exist.
+        $package2 = array(
+            'name' => 'components/package',
+            'type' => 'component',
+            'extra' => array(
+                'component' => array(
+                    'styles' => array(
+                        __DIR__ . '/Resources/test-not-found.css',
+                    ),
+                ),
+            ),
+        );
+        $packages = array($package, $package2);
+        $expected = array(__DIR__ . '/Resources/test.css');
+        $tests[] = array($packages, array(), $expected);
+
+        // Test collecting a style that doesn't exist.
+        $package3 = array(
+            'name' => 'components/package',
+            'type' => 'component',
+            'extra' => array(
+                'component' => array(
+                    'styles' => array(
+                        __DIR__ . '/Resources/test2.css',
+                    ),
+                ),
+            ),
+        );
+        $packages = array($package, $package3);
+        $expected = array(
+            __DIR__ . '/Resources/test.css',
+            __DIR__ . '/Resources/test2.css',
+        );
+        $tests[] = array($packages, array(), $expected);
+
+        return $tests;
+    }
 }

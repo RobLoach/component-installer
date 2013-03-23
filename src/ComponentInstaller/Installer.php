@@ -17,6 +17,9 @@ use Composer\Package\PackageInterface;
 use Composer\Installer\LibraryInstaller;
 use Composer\Script\Event;
 use Composer\Json\JsonFile;
+use Assetic\Asset\AssetCollection;
+use Assetic\Filter\CssRewriteFilter;
+use Assetic\Asset\FileAsset;
 
 /**
  * The Component Installer for Composer.
@@ -122,6 +125,22 @@ class Installer extends LibraryInstaller
 
             return false;
         }
+
+        // Build the require.css file.
+        $io->write('<info>Building require.css</info>');
+        $filters = array(new CssRewriteFilter());
+        $styles = new AssetCollection(array(), $filters);
+        foreach (static::packageStyles($packages, $composer->getConfig()) as $style) {
+            $styles->add(new FileAsset($style));
+        }
+        $css = $styles->dump();
+        if (!empty($css)) {
+            if (file_put_contents($destination . '/require.css', $css) === FALSE) {
+                $io->write('<error>Error writing require.css to destination</error>');
+
+                return false;
+            }
+        }
     }
 
     /**
@@ -218,5 +237,48 @@ if (typeof exports !== "undefined" && typeof module !== "undefined") {
 EOT;
 
         return $output;
+    }
+
+    /**
+     * Retrieves an array of styles from a collection of packages.
+     *
+     * @param $packages
+     *   An array of packages from the composer.lock file.
+     * @param $config
+     *   The Composer Config object.
+     */
+    public static function packageStyles(array $packages, Config $config)
+    {
+        $styles = array();
+        $componentDir = static::getConfigOption($config, 'component-dir', 'components');
+
+        // Construct the packages configuration.
+        foreach ($packages as $package) {
+            if (isset($package['type']) && $package['type'] == 'component') {
+                // Retrieve information from the extra options.
+                $extra = isset($package['extra']) ? $package['extra'] : array();
+                $options = isset($extra['component']) ? $extra['component'] : array();
+
+                // Construct the base details.
+                $name = static::getComponentName($package['name'], $extra);
+
+                // Build the "main" directive.
+                $packageStyles = isset($options['styles']) ? $options['styles'] : array();
+                foreach ($packageStyles as $style) {
+                    $candidates = array(
+                        $componentDir . '/' . $name . '/' . $style,
+                        $style,
+                    );
+                    foreach ($candidates as $candidate) {
+                        if (file_exists($candidate)) {
+                            $styles[] = $candidate;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $styles;
     }
 }

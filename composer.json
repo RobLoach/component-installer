@@ -18,10 +18,12 @@
         "class": "ComponentInstaller\\Installer"
     },
     "require": {
-        "php": ">=5.3.2"
+        "php": ">=5.3.2",
+        "kriswallsmith/assetic": "1.1.*"
     },
     "require-dev": {
         "composer/composer": "1.0.*@dev",
         "phpunit/phpunit": "3.7.*"
-    }
+    },
+    "minimum-stability": "alpha"
 }
