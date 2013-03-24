@@ -203,7 +203,7 @@ example, we define use of [html5shiv](https://github.com/aFarkas/html5shiv):
 ```
 
 Todo
-----------
+----
 
 * More [RequireJS Configurations](http://www.requirejs.org/docs/api.html#config)
 * Put together a list of Components that make use of Component Installer

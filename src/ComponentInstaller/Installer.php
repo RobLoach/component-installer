@@ -96,16 +96,18 @@ class Installer extends LibraryInstaller
         $composer = $event->getComposer();
         $locker = $composer->getLocker();
         $lockData = $locker->getLockData();
+        $config = $composer->getConfig();
         $packages = $lockData['packages'];
         $io->write('<info>Building require.js</info>');
 
         // Figure out where all Components should be installed.
-        $destination = static::getConfigOption($composer->getConfig(), 'component-dir', 'components');
+        $componentDir = static::getConfigOption($config, 'component-dir', 'components');
+        $baseUrl = static::getConfigOption($config, 'component-baseurl', 'components');
 
         // Construct the require.js and stick it in the destination.
-        $json = static::requireJson($packages, $composer->getConfig());
-        $config = static::requireJs($json);
-        if (file_put_contents($destination . '/require.config.js', $config) === FALSE) {
+        $json = static::requireJson($packages, $config);
+        $requireConfig = static::requireJs($json);
+        if (file_put_contents($componentDir . '/require.config.js', $requireConfig) === FALSE) {
             $io->write('<error>Error writing require.config.js</error>');
 
             return false;
@@ -120,21 +122,31 @@ class Installer extends LibraryInstaller
         }
 
         // Append the config to the require.js and write it.
-        if (file_put_contents($destination . '/require.js', $requirejs . $config) === FALSE) {
-            $io->write('<error>Error writing require.js to destination</error>');
+        if (file_put_contents($componentDir . '/require.js', $requirejs . $requireConfig) === FALSE) {
+            $io->write('<error>Error writing require.js to the components directory</error>');
 
             return false;
         }
 
         // Build the require.css file.
         $io->write('<info>Building require.css</info>');
-        $filters = array(new CssRewriteFilter());
-        $styles = new AssetCollection(array(), $filters);
-        foreach (static::packageStyles($packages, $composer->getConfig()) as $style) {
-            $styles->add(new FileAsset($style));
+        $filters = new \Assetic\Filter\FilterCollection(array(
+            new CssRewriteFilter(),
+        ));
+        $assets = new AssetCollection();
+        $styles = static::packageStyles($packages, $config);
+        foreach ($styles as $style) {
+            $assetPath = realpath($style);
+            $sourceRoot = dirname($style);
+            $sourcePath = $style;
+            $targetPath = $baseUrl;
+            $asset = new FileAsset($assetPath, $filters, $sourceRoot, $sourcePath);
+            $asset->setTargetPath($targetPath);
+            $assets->add($asset);
         }
-        $css = $styles->dump();
-        if (file_put_contents($destination . '/require.css', $css) === FALSE) {
+
+        $css = $assets->dump();
+        if (file_put_contents($componentDir . '/require.css', $css) === FALSE) {
             $io->write('<error>Error writing require.css to destination</error>');
 
             return false;
