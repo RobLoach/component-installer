@@ -165,11 +165,6 @@ if (typeof exports !== "undefined" && typeof module !== "undefined") {
     module.exports = components;
 }
 EOT;
-        // Tests an empty config.
-        $tests[] = array(
-            array(),
-            sprintf($js, "[\n\n]"),
-        );
 
         // Tests a basic configuration.
         $tests[] = array(
@@ -452,7 +447,11 @@ EOT;
             ),
         );
         $packages = array($package);
-        $expected = array(__DIR__ . '/Resources/test.css');
+        $expected = array(
+            'package' => array(
+                __DIR__ . '/Resources/test.css' => __DIR__ . '/Resources/test.css',
+            )
+        );
         $tests[] = array($packages, array(), $expected);
 
         // Test collecting a style that doesn't exist.
@@ -468,7 +467,11 @@ EOT;
             ),
         );
         $packages = array($package, $package2);
-        $expected = array(__DIR__ . '/Resources/test.css');
+        $expected = array(
+            'package' => array(
+                __DIR__ . '/Resources/test.css' => __DIR__ . '/Resources/test.css',
+            )
+        );
         $tests[] = array($packages, array(), $expected);
 
         // Test collecting a style that doesn't exist.
@@ -485,8 +488,10 @@ EOT;
         );
         $packages = array($package, $package3);
         $expected = array(
-            __DIR__ . '/Resources/test.css',
-            __DIR__ . '/Resources/test2.css',
+            'package' => array(
+                __DIR__ . '/Resources/test.css' => __DIR__ . '/Resources/test.css',
+                __DIR__ . '/Resources/test2.css' => __DIR__ . '/Resources/test2.css',
+            )
         );
         $tests[] = array($packages, array(), $expected);
 

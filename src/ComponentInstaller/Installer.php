@@ -20,6 +20,7 @@ use Composer\Json\JsonFile;
 use Assetic\Asset\AssetCollection;
 use Assetic\Filter\CssRewriteFilter;
 use Assetic\Asset\FileAsset;
+use Assetic\Filter\FilterCollection;
 
 /**
  * The Component Installer for Composer.
@@ -130,19 +131,26 @@ class Installer extends LibraryInstaller
 
         // Build the require.css file.
         $io->write('<info>Building require.css</info>');
-        $filters = new \Assetic\Filter\FilterCollection(array(
+        $filters = new FilterCollection(array(
             new CssRewriteFilter(),
         ));
         $assets = new AssetCollection();
         $styles = static::packageStyles($packages, $config);
-        foreach ($styles as $style) {
-            $assetPath = realpath($style);
-            $sourceRoot = dirname($style);
-            $sourcePath = $style;
-            $targetPath = $baseUrl;
-            $asset = new FileAsset($assetPath, $filters, $sourceRoot, $sourcePath);
-            $asset->setTargetPath($targetPath);
-            $assets->add($asset);
+        foreach ($styles as $package => $packageStyles) {
+            foreach ($packageStyles as $style => $path) {
+                // The full path to the CSS file.
+                $assetPath = realpath($path);
+                // The root of the CSS file.
+                $sourceRoot = dirname($path);
+                // The style path to the CSS file when external.
+                $sourcePath = $package . '/' . $style;
+                // Where the final CSS will be generated.
+                $targetPath = $componentDir;
+                // Build the asset and add it to the collection.
+                $asset = new FileAsset($assetPath, $filters, $sourceRoot, $sourcePath);
+                $asset->setTargetPath($targetPath);
+                $assets->add($asset);
+            }
         }
 
         $css = $assets->dump();
@@ -281,7 +289,8 @@ EOT;
                     );
                     foreach ($candidates as $candidate) {
                         if (file_exists($candidate)) {
-                            $styles[] = $candidate;
+                            // Provide the package name, style and full path.
+                            $styles[$name][$style] = $candidate;
                             break;
                         }
                     }
