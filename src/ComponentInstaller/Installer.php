@@ -134,12 +134,10 @@ class Installer extends LibraryInstaller
             $styles->add(new FileAsset($style));
         }
         $css = $styles->dump();
-        if (!empty($css)) {
-            if (file_put_contents($destination . '/require.css', $css) === FALSE) {
-                $io->write('<error>Error writing require.css to destination</error>');
+        if (file_put_contents($destination . '/require.css', $css) === FALSE) {
+            $io->write('<error>Error writing require.css to destination</error>');
 
-                return false;
-            }
+            return false;
         }
     }
 
