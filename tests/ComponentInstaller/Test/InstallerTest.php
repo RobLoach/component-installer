@@ -145,7 +145,47 @@ class InstallerTest extends LibraryInstallerTest
      *
      * @dataProvider providerRequireJs
      */
-    public function testRequireJs(array $packages, array $config, $expected = null)
+    public function testRequireJs(array $json = array(), $expected = '')
+    {
+        $result = Installer::requireJs($json);
+        $this->assertEquals($result, $expected, sprintf('Fail to get proper expected require.js'));
+    }
+
+    public function providerRequireJs()
+    {
+        // Start with a base RequireJS configuration.
+        $js = <<<EOT
+var components = %s;
+if (typeof require !== "undefined" && require.config) {
+    require.config(components);
+} else {
+    var require = components;
+}
+if (typeof exports !== "undefined" && typeof module !== "undefined") {
+    module.exports = components;
+}
+EOT;
+        // Tests an empty config.
+        $tests[] = array(
+            array(),
+            sprintf($js, "[\n\n]"),
+        );
+
+        // Tests a basic configuration.
+        $tests[] = array(
+            array('foo' => 'bar'),
+            sprintf($js, "{\n    \"foo\": \"bar\"\n}"),
+        );
+
+        return $tests;
+    }
+
+    /**
+     * testRequireJson
+     *
+     * @dataProvider providerRequireJson
+     */
+    public function testRequireJson(array $packages, array $config, $expected = null)
     {
         $configObject = new Config();
         $configObject->merge(array('config' => $config));
@@ -153,7 +193,7 @@ class InstallerTest extends LibraryInstallerTest
         $this->assertEquals($result, $expected, sprintf('Fail to get proper expected require.js configuration'));
     }
 
-    public function providerRequireJs()
+    public function providerRequireJson()
     {
         // Test a package that doesn't have any extra information.
         $packageWithoutExtra = array(

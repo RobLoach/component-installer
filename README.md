@@ -52,7 +52,7 @@ To set up a Component to be installed with Component Installer, have it
 
 ``` json
 {
-    "name": "components/jquery",
+    "name": "components/bootstrap",
     "type": "component",
     "require": {
         "robloach/component-installer": "*"
@@ -60,7 +60,10 @@ To set up a Component to be installed with Component Installer, have it
     "extra": {
         "component": {
             "scripts": [
-                "jquery.js"
+                "js/bootstrap.js"
+            ],
+            "styles": [
+                "css/bootstrap.css"
             ]
         }
     }
@@ -200,13 +203,13 @@ example, we define use of [html5shiv](https://github.com/aFarkas/html5shiv):
 ```
 
 Todo
-----
+----------
 
 * More [RequireJS Configurations](http://www.requirejs.org/docs/api.html#config)
 * Put together a list of Components that make use of Component Installer
 * Compile all the components into one file (`require.min.js`?)
-* Determine if `scripts` is named correctly, or if it should just use `main`
-* Aggregate all `styles` together into one *require.css*
+* Concatenate all `scripts` into one script file and use that file for `main`
+* Install Components into `vendor-dir` and symlink all scripts/styles instead?
 * Determine if `component-baseurl` is the correct name for it
 * Install to `components/[vendor]-[package]` rather than `components/[package]`?
 

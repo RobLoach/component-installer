@@ -22,8 +22,7 @@
         "kriswallsmith/assetic": "1.1.*"
     },
     "require-dev": {
-        "composer/composer": "1.0.*@dev",
-        "phpunit/phpunit": "3.7.*"
+        "composer/composer": "1.0.*@dev"
     },
     "minimum-stability": "alpha"
 }
