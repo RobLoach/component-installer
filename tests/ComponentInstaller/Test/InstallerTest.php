@@ -11,6 +11,7 @@
 
 namespace Composer\Test\Installer;
 
+use Composer\Installer\LibraryInstaller;
 use Composer\Test\Installer\LibraryInstallerTest;
 use ComponentInstaller\Installer;
 use Composer\Package\Package;
@@ -23,6 +24,35 @@ use Composer\Config;
  */
 class InstallerTest extends LibraryInstallerTest
 {
+    protected $componentDir = 'components';
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->componentDir = realpath(sys_get_temp_dir()).DIRECTORY_SEPARATOR.'composer-test-component';
+        $this->ensureDirectoryExistsAndClear($this->componentDir);
+
+        $this->config->merge(array(
+            'config' => array(
+                'component-dir' => $this->componentDir,
+            ),
+        ));
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+        $this->fs->removeDirectory($this->componentDir);
+    }
+
+    public function testInstallerCreationShouldNotCreateComponentDirectory()
+    {
+        $this->fs->removeDirectory($this->componentDir);
+
+        new LibraryInstaller($this->io, $this->composer);
+        $this->assertFileNotExists($this->componentDir);
+    }
 
     /**
      * testSupports
@@ -72,19 +102,16 @@ class InstallerTest extends LibraryInstallerTest
      *
      * @see ComponentInstaller\\Installer::getInstallPath()
      */
-    public function testComponentGetInstallPath($name, $expected, $extra = array(), $componentdir = '')
+    public function testComponentGetInstallPath($name, $expected, $extra = array())
     {
         $installer = new Installer($this->io, $this->composer, 'component');
         $package = new Package($name, '1.0.0', '1.0.0');
         if (!empty($extra)) {
             $package->setExtra($extra);
         }
-        if (!empty($componentdir)) {
-            $config['config']['component-dir'] = $componentdir;
-            $this->composer->getConfig()->merge($config);
-        }
         $result = $installer->getInstallPath($package);
-        $this->assertEquals($expected, $result, sprintf('Failed to get proper install path for %s', $name));
+
+        $this->assertEquals($this->componentDir.'/'.$expected, $result, sprintf('Failed to get proper install path for %s ', $name));
     }
 
     /**
@@ -94,18 +121,18 @@ class InstallerTest extends LibraryInstallerTest
      */
     public function providerComponentGetInstallPath()
     {
-        $tests[] = array('foo/bar1', 'components/bar1');
-        $tests[] = array('foo/bar2', 'components/foobar', array(
+        $tests[] = array('foo/bar1', 'bar1');
+        $tests[] = array('foo/bar2', 'foobar', array(
             'component' => array(
                 'name' => 'foobar'
             )
         ));
-        $tests[] = array('foo/bar3', 'public/bar3', array(), 'public');
-        $tests[] = array('foo/bar4', 'public/foobar', array(
+        $tests[] = array('foo/bar3', 'bar3', array());
+        $tests[] = array('foo/bar4', 'foobar', array(
             'component' => array(
                 'name' => 'foobar'
             )
-        ), 'public');
+        ));
 
         return $tests;
     }
