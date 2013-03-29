@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Composer\Test\Installer;
+namespace Composer\Test;
 
 use Composer\Installer\LibraryInstaller;
 use Composer\Test\Installer\LibraryInstallerTest;
@@ -42,15 +42,15 @@ class InstallerTest extends LibraryInstallerTest
 
     protected function tearDown()
     {
-        parent::tearDown();
         $this->fs->removeDirectory($this->componentDir);
+
+        return parent::tearDown();
     }
 
     public function testInstallerCreationShouldNotCreateComponentDirectory()
     {
         $this->fs->removeDirectory($this->componentDir);
-
-        new LibraryInstaller($this->io, $this->composer);
+        new Installer($this->io, $this->composer);
         $this->assertFileNotExists($this->componentDir);
     }
 
@@ -79,6 +79,7 @@ class InstallerTest extends LibraryInstallerTest
      */
     public function providerComponentSupports()
     {
+        // All package types support having Components.
         $tests[] = array('component', true);
         $tests[] = array('not-a-component', false);
         $tests[] = array('library', false);
@@ -86,92 +87,12 @@ class InstallerTest extends LibraryInstallerTest
         return $tests;
     }
 
-    /**
-     * testGetInstallPath
-     *
-     * @param $name
-     *   The name of the package.
-     * @param $expected
-     *   The expected install path.
-     * @param $componentname
-     *   The component-name provided by the package.
-     * @param $componentdir
-     *   The component-dir provided by the root config.
-     *
-     * @dataProvider providerComponentGetInstallPath
-     *
-     * @see ComponentInstaller\\Installer::getInstallPath()
-     */
-    public function testComponentGetInstallPath($name, $expected, $extra = array())
-    {
-        $installer = new Installer($this->io, $this->composer, 'component');
-        $package = new Package($name, '1.0.0', '1.0.0');
-        if (!empty($extra)) {
-            $package->setExtra($extra);
-        }
-        $result = $installer->getInstallPath($package);
-
-        $this->assertEquals($this->componentDir.'/'.$expected, $result, sprintf('Failed to get proper install path for %s ', $name));
-    }
-
-    /**
-     * providerGetInstallPath
-     *
-     * @see testComponentGetInstallPath()
-     */
-    public function providerComponentGetInstallPath()
-    {
-        $tests[] = array('foo/bar1', 'bar1');
-        $tests[] = array('foo/bar2', 'foobar', array(
-            'component' => array(
-                'name' => 'foobar'
-            )
-        ));
-        $tests[] = array('foo/bar3', 'bar3', array());
-        $tests[] = array('foo/bar4', 'foobar', array(
-            'component' => array(
-                'name' => 'foobar'
-            )
-        ));
-
-        return $tests;
-    }
-
-    /**
-     * testGetConfigOption
-     *
-     * @dataProvider providerGetConfigOption
-     */
-    public function testGetConfigOption(array $config, $option, $default = null, $expected = null)
-    {
-        $configObject = new Config();
-        $configObject->merge(array('config' => $config));
-        $result = Installer::getConfigOption($configObject, $option, $default);
-        $this->assertEquals($result, $expected, sprintf('Fail to get proper config options for %s', $option));
-    }
-
-    /**
-     * providerGetConfigOption
-     *
-     * @see testGetConfigOption()
-     */
-    public function providerGetConfigOption()
-    {
-        // Get no option.
-        $tests[] = array(array('not-wanted' => 3), 'get-no-option');
-        // Retrieve the default value.
-        $tests[] = array(array(), 'get-default-option', 'default', 'default');
-        // Retrieve the correct value.
-        $tests[] = array(array('wanted' => 123), 'wanted', 500, 123);
-
-        return $tests;
-    }
 
     /**
      * testRequireJs
      *
      * @dataProvider providerRequireJs
-     */
+     *
     public function testRequireJs(array $json = array(), $expected = '')
     {
         $result = Installer::requireJs($json);
@@ -206,7 +127,7 @@ EOT;
      * testRequireJson
      *
      * @dataProvider providerRequireJson
-     */
+     *
     public function testRequireJson(array $packages, array $config, $expected = null)
     {
         $configObject = new Config();
@@ -407,50 +328,10 @@ EOT;
     }
 
     /**
-     * testGetComponentName
-     *
-     * @dataProvider providerGetComponentName
-     */
-    public function testGetComponentName($prettyName, array $extra, $expected)
-    {
-        $result = Installer::getComponentName($prettyName, array('component' => $extra));
-        $this->assertEquals($result, $expected, sprintf('Fail to get proper component name for %s', $prettyName));
-    }
-
-    /**
-     * Data provider for testGetComponentName.
-     *
-     * @see testGetComponentName()
-     */
-    public function providerGetComponentName()
-    {
-        return array(
-            array('components/jquery', array(), 'jquery'),
-            array('components/jquery', array('name' => 'myownjquery'), 'myownjquery'),
-            array('jquery', array(), 'jquery'),
-        );
-    }
-
-    /**
-     * Tests setting up the root package scripts.
-     */
-    public function testSetUpScripts()
-    {
-        $installer = new Installer($this->io, $this->composer, 'component');
-        $package = new RootPackage('foo/bar', '1.0.0', '1.0.0');
-        $installer->setUpScripts($package);
-        $scripts = $package->getScripts();
-        $result = isset($scripts['post-install-cmd']['component-installer']) ? $scripts['post-install-cmd']['component-installer'] : FALSE;
-        $this->assertEquals($result, 'ComponentInstaller\\Installer::postInstall', 'The postInstall script handler is registered on install.');
-        $result = isset($scripts['post-update-cmd']['component-installer']) ? $scripts['post-update-cmd']['component-installer'] : FALSE;
-        $this->assertEquals($result, 'ComponentInstaller\\Installer::postInstall', 'The postInstall script handler is registered on update.');
-    }
-
-    /**
      * testPackageStyles
      *
      * @dataProvider providerPackageStyles
-     */
+     *
     public function testPackageStyles(array $packages, array $config, $expected = null)
     {
         $configObject = new Config();
@@ -524,4 +405,5 @@ EOT;
 
         return $tests;
     }
+        */
 }
