@@ -22,15 +22,18 @@ use Assetic\Filter\FilterCollection;
 
 class RequireCssProcess extends Process
 {
-    public function process()
+    public function getMessage()
     {
-        $this->io->write('  <comment>Building require.css</comment>');
+        return '  <comment>Building require.css</comment>';
+    }
 
+    public function process($message = '')
+    {
         $filters = new FilterCollection(array(
             new CssRewriteFilter(),
         ));
         $assets = new AssetCollection();
-        $styles = $this->packageStyles($this->packages, $this->config);
+        $styles = $this->packageStyles($this->packages);
         foreach ($styles as $package => $packageStyles) {
             foreach ($packageStyles as $style => $path) {
                 // The full path to the CSS file.
@@ -50,7 +53,7 @@ class RequireCssProcess extends Process
 
         $css = $assets->dump();
         if (file_put_contents($this->componentDir . '/require.css', $css) === FALSE) {
-            $io->write('<error>Error writing require.css to destination</error>');
+            $this->io->write('<error>Error writing require.css to destination</error>');
 
             return false;
         }
@@ -67,7 +70,7 @@ class RequireCssProcess extends Process
      * @return array
      *   A set of package styles.
      */
-    public function packageStyles(array $packages, Config $config)
+    public function packageStyles(array $packages)
     {
         $styles = array();
 

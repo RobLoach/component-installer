@@ -19,17 +19,21 @@ class CopyProcess extends Process
 {
     protected $installationManager;
 
-    public function __construct(Composer $composer, IOInterface $io)
+    public function init()
     {
-        parent::__construct($composer, $io);
+        $output = parent::init();
+        $this->installationManager = $this->composer->getInstallationManager();
 
-        $this->installationManager = $composer->getInstallationManager();
+        return $output;
     }
 
-    public function process()
+    public function getMessage()
     {
-        $this->io->write('  <comment>Copying assets to component directory</comment>');
+        return '  <comment>Copying assets to component directory</comment>';
+    }
 
+    public function process($message = '')
+    {
         foreach ($this->packages as $package) {
             $packageDir = $this->getVendorDir($package);
             $extra = isset($package['extra']) ? $package['extra'] : array();

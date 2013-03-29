@@ -25,10 +25,13 @@
         "composer/composer": "1.0.*@dev",
         "phpunit/phpunit": "3.7.*"
     },
-    "minimum-stability": "alpha",
     "archive": {
         "exclude": [
-            "tests"
+            "tests",
+            "phpunit.xml.dist",
+            ".travis.yml",
+            ".gitignore"
         ]
-    }
+    },
+    "minimum-stability": "alpha"
 }

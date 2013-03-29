@@ -63,6 +63,10 @@ class Installer extends LibraryInstaller
 
         foreach ($processes as $class) {
             $process = new $class($composer, $io);
+            if (!$process->init()) {
+                $io->write('<error>An error occurred while initializing the process.</info>');
+                break;
+            }
             $process->process();
         }
     }

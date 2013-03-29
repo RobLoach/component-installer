@@ -19,21 +19,28 @@ use Composer\Json\JsonFile;
 
 class RequireJsProcess extends Process
 {
+    /**
+     * The base URL for the require.js configuration.
+     */
     protected $baseUrl = 'components';
 
-    public function __construct(Composer $composer, IOInterface $io)
+    public function getMessage()
     {
-        parent::__construct($composer, $io);
-
-        if (isset($this->config) && $this->config->has('component-baseurl')) {
-            $this->baseUrl = $this->config->get('component-baseurl');
-        }
+        return '  <comment>Building require.js</comment>';
     }
 
-    public function process()
+    public function init()
     {
-        $this->io->write('  <comment>Building require.js</comment>');
+        $output = parent::init();
+        if ($this->config->has('component-baseurl')) {
+            $this->baseUrl = $this->config->get('component-baseurl');
+        }
 
+        return $output;
+    }
+
+    public function process($message = '')
+    {
         // Construct the require.js and stick it in the destination.
         $json = $this->requireJson($this->packages, $this->config);
         $requireConfig = $this->requireJs($json);
@@ -70,7 +77,7 @@ class RequireJsProcess extends Process
      * @return array
      *   The built JSON array.
      */
-    public function requireJson(array $packages, Config $config)
+    public function requireJson(array $packages)
     {
         $json = array();
 
@@ -108,7 +115,7 @@ class RequireJsProcess extends Process
             }
         }
 
-        // Provide the baseUrl if it's available.
+        // Provide the baseUrl.
         $json['baseUrl'] = $this->baseUrl;
 
         return $json;

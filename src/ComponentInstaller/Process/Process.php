@@ -17,20 +17,32 @@ use Composer\IO\NullIO;
 
 class Process implements ProcessInterface
 {
-    protected $config;
-    protected $componentDir = 'components';
     protected $composer;
-    protected $packages = array();
     protected $io;
+    protected $config;
+    protected $packages = array();
+    protected $componentDir = 'components';
 
     public function __construct(Composer $composer = null, IOInterface $io = null)
     {
         $this->composer = isset($composer) ? $composer : new Composer();
         $this->io = isset($io) ? $io : new NullIO();
-        $this->config = $composer->getConfig();
-        if (isset($this->config) && $this->config->has('component-dir')) {
-            // Default the component directory to 'components'.
-            $this->componentDir = $this->config->get('component-dir');
+    }
+
+    public function init()
+    {
+        // Display a status update to the user.
+        $message = $this->getMessage();
+        if (!empty($message)) {
+            $this->io->write($message);
+        }
+
+        // Retrieve the configuration variables.
+        $this->config = $this->composer->getConfig();
+        if (isset($this->config)) {
+            if ($this->config->has('component-dir')) {
+                $this->componentDir = $this->config->get('component-dir');
+            }
         }
 
         // Get the available packages.
@@ -39,12 +51,19 @@ class Process implements ProcessInterface
             $lockData = $locker->getLockData();
             $this->packages = isset($lockData['packages']) ? $lockData['packages'] : array();
         }
+        // @todo Add the root package from $this->composer->getPackage().
+
+        return true;
     }
+
+    public function getMessage()
+    {
+        return '  <info>Processing...</info>';
+    }
+
 
     public function process()
     {
-        $this->io->write('  <error>The given process is an in complete implementation.</error>');
-
         return false;
     }
 
