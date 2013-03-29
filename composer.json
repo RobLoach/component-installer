@@ -25,5 +25,10 @@
         "composer/composer": "1.0.*@dev",
         "phpunit/phpunit": "3.7.*"
     },
-    "minimum-stability": "alpha"
+    "minimum-stability": "alpha",
+    "archive": {
+        "exclude": [
+            "tests"
+        ]
+    }
 }

@@ -5,7 +5,7 @@
  *
  * (c) Rob Loach <http://robloach.net>
  *
- * For the full copyright and license information, please view the LICENSE
+ * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
  */
 
@@ -89,6 +89,9 @@ class Installer extends LibraryInstaller
      *
      * @param $event
      *   The event executed by the script.
+     *
+     * @return boolean
+     *   Whether or not the install completed correction.
      */
     public static function postInstall(Event $event)
     {
@@ -182,6 +185,9 @@ class Installer extends LibraryInstaller
      *   An array of packages from the composer.lock file.
      * @param $config
      *   The Composer Config object.
+     *
+     * @return array
+     *   The built JSON array.
      */
     public static function requireJson(array $packages, Config $config)
     {
@@ -235,6 +241,9 @@ class Installer extends LibraryInstaller
      *
      * @param $json
      *   The require.js JSON configuration.
+     *
+     * @return string
+     *   The RequireJS JavaScript configuration.
      */
     public static function requireJs(array $json = array())
     {
@@ -264,6 +273,9 @@ EOT;
      *   An array of packages from the composer.lock file.
      * @param $config
      *   The Composer Config object.
+     *
+     * @return array
+     *   A set of package styles.
      */
     public static function packageStyles(array $packages, Config $config)
     {
