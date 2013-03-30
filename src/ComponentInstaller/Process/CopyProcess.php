@@ -14,6 +14,7 @@ namespace ComponentInstaller\Process;
 use Composer\IO\IOInterface;
 use Composer\Composer;
 use Composer\Package\Package;
+use Composer\Package\Loader\ArrayLoader;
 
 class CopyProcess extends Process
 {
@@ -34,21 +35,29 @@ class CopyProcess extends Process
 
     public function process($message = '')
     {
+        // Mirror each package's assets into the component directory.
         foreach ($this->packages as $package) {
             $packageDir = $this->getVendorDir($package);
             $extra = isset($package['extra']) ? $package['extra'] : array();
             $componentName = $this->getComponentName($package['name'], $extra);
             $fileType = array('scripts', 'styles', 'files');
             foreach ($fileType as $type) {
+                // Only act on the files if they're available.
                 if (isset($extra['component'][$type]) && is_array($extra['component'][$type])) {
                     foreach ($extra['component'][$type] as $file) {
+                        // Make sure the file itself is available.
                         $source = $packageDir.DIRECTORY_SEPARATOR.$file;
                         if (file_exists($source)) {
+                            // Find where the file destination should be.
                             $destination = $this->componentDir.DIRECTORY_SEPARATOR.$componentName.DIRECTORY_SEPARATOR.$file;
+
+                            // Ensure the directory is available.
                             $dir = dirname($destination);
                             if (!is_dir($dir)) {
                                 mkdir(dirname($destination), 0777, true);
                             }
+
+                            // @todo Use a symlink instead, when possible?
                             copy($source, $destination);
                         }
                     }
@@ -59,8 +68,15 @@ class CopyProcess extends Process
 
     public function getVendorDir(array $package)
     {
-        $loader = new \Composer\Package\Loader\ArrayLoader();
+        // The root package vendor directory is not handled by getInstallPath().
+        if (isset($package['is-root']) && $package['is-root'] === true) {
+            // @todo Handle cases where the working directory is not where the
+            // root package is installed.
+            return getcwd();
+        }
+        $loader = new ArrayLoader();
         $completePackage = $loader->load($package);
+
         return $this->installationManager->getInstallPath($completePackage);
     }
 }

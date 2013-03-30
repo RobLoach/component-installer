@@ -83,35 +83,34 @@ class RequireJsProcess extends Process
 
         // Construct the packages configuration.
         foreach ($packages as $package) {
-            if (isset($package['type']) && $package['type'] == 'component') {
-                // Retrieve information from the extra options.
-                $extra = isset($package['extra']) ? $package['extra'] : array();
-                $options = isset($extra['component']) ? $extra['component'] : array();
+            // Retrieve information from the extra options.
+            $extra = isset($package['extra']) ? $package['extra'] : array();
+            $options = isset($extra['component']) ? $extra['component'] : array();
 
-                // Construct the base details.
-                $name = $this->getComponentName($package['name'], $extra);
-                $component['name'] = $name;
+            // Construct the base details.
+            $name = $this->getComponentName($package['name'], $extra);
+            $component['name'] = $name;
 
-                // Build the "main" directive.
-                $scripts = isset($options['scripts']) ? $options['scripts'] : array();
-                if (isset($scripts[0])) {
-                    $component['main'] = $scripts[0];
-                }
+            // Build the "main" directive.
+            $scripts = isset($options['scripts']) ? $options['scripts'] : array();
+            // @todo Aggregate all "scripts" together into a build.js?
+            if (isset($scripts[0])) {
+                $component['main'] = $scripts[0];
+            }
 
-                // Add the package to the scripts.
-                $json['packages'][] = $component;
+            // Add the package to the scripts.
+            $json['packages'][] = $component;
 
-                // Add the shim definition.
-                $shim = isset($options['shim']) ? $options['shim'] : array();
-                if (!empty($shim)) {
-                    $json['shim'][$name] = $shim;
-                }
+            // Add the shim definition.
+            $shim = isset($options['shim']) ? $options['shim'] : array();
+            if (!empty($shim)) {
+                $json['shim'][$name] = $shim;
+            }
 
-                // Add the config definition.
-                $packageConfig = isset($options['config']) ? $options['config'] : array();
-                if (!empty($packageConfig)) {
-                    $json['config'][$name] = $packageConfig;
-                }
+            // Add the config definition.
+            $packageConfig = isset($options['config']) ? $options['config'] : array();
+            if (!empty($packageConfig)) {
+                $json['config'][$name] = $packageConfig;
             }
         }
 

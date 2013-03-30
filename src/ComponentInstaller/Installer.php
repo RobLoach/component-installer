@@ -55,14 +55,17 @@ class Installer extends LibraryInstaller
         $io = $event->getIO();
         $io->write('<info>Compiling Component files</info>');
 
+        // Set up all the processes.
         $processes = array(
             "ComponentInstaller\\Process\\CopyProcess",
             "ComponentInstaller\\Process\\RequireJsProcess",
             "ComponentInstaller\\Process\\RequireCssProcess",
         );
 
+        // Initialize and execute each process in sequence.
         foreach ($processes as $class) {
             $process = new $class($composer, $io);
+            // When an error occurs during initialization, end the process.
             if (!$process->init()) {
                 $io->write('<error>An error occurred while initializing the process.</info>');
                 break;

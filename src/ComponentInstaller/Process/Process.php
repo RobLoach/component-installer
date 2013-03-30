@@ -14,6 +14,7 @@ namespace ComponentInstaller\Process;
 use Composer\IO\IOInterface;
 use Composer\Composer;
 use Composer\IO\NullIO;
+use Composer\Package\Dumper\ArrayDumper;
 
 class Process implements ProcessInterface
 {
@@ -51,7 +52,15 @@ class Process implements ProcessInterface
             $lockData = $locker->getLockData();
             $this->packages = isset($lockData['packages']) ? $lockData['packages'] : array();
         }
-        // @todo Add the root package from $this->composer->getPackage().
+
+        // Add the root package to the packages list.
+        $root = $this->composer->getPackage();
+        if ($root) {
+            $dumper = new ArrayDumper();
+            $package = $dumper->dump($root);
+            $package['is-root'] = true;
+            $this->packages[] = $package;
+        }
 
         return true;
     }
@@ -60,7 +69,6 @@ class Process implements ProcessInterface
     {
         return '  <info>Processing...</info>';
     }
-
 
     public function process()
     {

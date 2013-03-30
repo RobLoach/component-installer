@@ -76,27 +76,25 @@ class RequireCssProcess extends Process
 
         // Construct the packages configuration.
         foreach ($packages as $package) {
-            if (isset($package['type']) && $package['type'] == 'component') {
-                // Retrieve information from the extra options.
-                $extra = isset($package['extra']) ? $package['extra'] : array();
-                $options = isset($extra['component']) ? $extra['component'] : array();
+            // Retrieve information from the extra options.
+            $extra = isset($package['extra']) ? $package['extra'] : array();
+            $options = isset($extra['component']) ? $extra['component'] : array();
 
-                // Construct the base details.
-                $name = $this->getComponentName($package['name'], $extra);
+            // Construct the base details.
+            $name = $this->getComponentName($package['name'], $extra);
 
-                // Build the "main" directive.
-                $packageStyles = isset($options['styles']) ? $options['styles'] : array();
-                foreach ($packageStyles as $style) {
-                    $candidates = array(
-                        $this->componentDir . '/' . $name . '/' . $style,
-                        $style,
-                    );
-                    foreach ($candidates as $candidate) {
-                        if (file_exists($candidate)) {
-                            // Provide the package name, style and full path.
-                            $styles[$name][$style] = $candidate;
-                            break;
-                        }
+            // Build the "main" directive.
+            $packageStyles = isset($options['styles']) ? $options['styles'] : array();
+            foreach ($packageStyles as $style) {
+                $candidates = array(
+                    $this->componentDir . '/' . $name . '/' . $style,
+                    $style,
+                );
+                foreach ($candidates as $candidate) {
+                    if (file_exists($candidate)) {
+                        // Provide the package name, style and full path.
+                        $styles[$name][$style] = $candidate;
+                        break;
                     }
                 }
             }
