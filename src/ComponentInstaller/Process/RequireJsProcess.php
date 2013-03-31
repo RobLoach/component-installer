@@ -89,7 +89,9 @@ class RequireJsProcess extends Process
 
             // Construct the base details.
             $name = $this->getComponentName($package['name'], $extra);
-            $component['name'] = $name;
+            $component = array(
+                'name' => $name,
+            );
 
             // Build the "main" directive.
             $scripts = isset($options['scripts']) ? $options['scripts'] : array();
