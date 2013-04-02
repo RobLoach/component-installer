@@ -15,6 +15,7 @@ use Composer\IO\IOInterface;
 use Composer\Composer;
 use Composer\Package\Package;
 use Composer\Package\Loader\ArrayLoader;
+use Composer\Util\Filesystem;
 
 class CopyProcess extends Process
 {
@@ -36,10 +37,12 @@ class CopyProcess extends Process
     public function process($message = '')
     {
         // Mirror each package's assets into the component directory.
+        $fs = new Filesystem();
         foreach ($this->packages as $package) {
             $packageDir = $this->getVendorDir($package);
+            $name = isset($package['name']) ? $package['name'] : '__component__';
             $extra = isset($package['extra']) ? $package['extra'] : array();
-            $componentName = $this->getComponentName($package['name'], $extra);
+            $componentName = $this->getComponentName($name, $extra);
             $fileType = array('scripts', 'styles', 'files');
             foreach ($fileType as $type) {
                 // Only act on the files if they're available.
@@ -52,20 +55,39 @@ class CopyProcess extends Process
                             $destination = $this->componentDir.DIRECTORY_SEPARATOR.$componentName.DIRECTORY_SEPARATOR.$file;
 
                             // Ensure the directory is available.
-                            $dir = dirname($destination);
-                            if (!is_dir($dir)) {
-                                mkdir(dirname($destination), 0777, true);
-                            }
+                            $fs->ensureDirectoryExists(dirname($destination));
 
-                            // @todo Use a symlink instead, when possible?
-                            copy($source, $destination);
+                            // Delete the file before creating its mirror.
+                            $fs->remove($destination);
+
+                            // Symlink the file using a relative path from the destination.
+                            $cwd = getcwd();
+                            $fullDestination = $cwd.DIRECTORY_SEPARATOR.$destination;
+                            $relative = $fs->findShortestPath($fullDestination, realpath($source));
+                            try {
+                                chdir(dirname($destination));
+                                symlink($relative, $fullDestination);
+                            }
+                            catch (\ErrorException $e) {
+                                // If Symlinking failed, try copying.
+                                if (!copy($relative, $fullDestination)) {
+                                    $this->io->write(sprintf('<error>Failed to produce %s as %s.</error>', $fullDestination, $relative));
+                                    return false;
+                                }
+                            }
+                            chdir($cwd);
                         }
                     }
                 }
             }
         }
+
+        return true;
     }
 
+    /**
+     * Retrieves the given package's vendor directory, where it's installed.
+     */
     public function getVendorDir(array $package)
     {
         // The root package vendor directory is not handled by getInstallPath().

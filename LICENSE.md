@@ -1,7 +1,7 @@
 LICENSE
 =======
 
-Base16 for Geany is released under the MIT License:
+Component Installer is released under the MIT License:
 
 > Copyright (C) 2013 [Rob Loach](http://robloach.net)
 >
