@@ -12,12 +12,8 @@
 namespace ComponentInstaller;
 
 use Composer\Composer;
-use Composer\Config;
-use Composer\Package\PackageInterface;
 use Composer\Installer\LibraryInstaller;
-use Composer\Repository\InstalledRepositoryInterface;
 use Composer\Script\Event;
-use Composer\Json\JsonFile;
 
 /**
  * The Component Installer for Composer.

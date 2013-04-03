@@ -13,7 +13,8 @@ Component Installer, into *components/jquery*:
 ``` json
 {
     "require": {
-        "components/jquery": "1.9.*"
+        "components/jquery": "1.9.*",
+        "components/normalize.css": "2.*"
     }
 }
 ```
@@ -21,13 +22,15 @@ Component Installer, into *components/jquery*:
 ### Using the Component
 
 Component Installer will build a [RequireJS](http://requirejs.org) configuration
-for you, which allows autoloading the scripts only when required:
+for you, which allows autoloading the scripts only when. A *require.css* file is
+also compiled from all included Component stylesheets:
 
 ``` html
 <!DOCTYPE html>
 <html>
     <head>
         <title>jQuery+RequireJS Component Installer Sample</title>
+        <link href="components/require.css" rel="stylesheet" type="text/css">
         <script src="components/require.js"></script>
     </head>
     <body>
@@ -41,8 +44,9 @@ for you, which allows autoloading the scripts only when required:
 </html>
 ```
 
-It is still possible to load using normal script tags. In this example, jQuery
-would be at *components/jquery/jquery.js*.
+It is still possible to use the scripts directly. In this example, jQuery would
+be at *components/jquery/jquery.js*, and Normalize would be available at
+*components/normalize.css/normalize.css*.
 
 ### Creating a Component
 
@@ -64,6 +68,10 @@ To set up a Component to be installed with Component Installer, have it
             ],
             "styles": [
                 "css/bootstrap.css"
+            ],
+            "files": [
+                "img/glyphicons-halflings.png",
+                "img/glyphicons-halflings-white.png"
             ]
         }
     }
@@ -209,9 +217,7 @@ Todo
 * Put together a list of Components that make use of Component Installer
 * Compile all the components into one file (`require.min.js`?)
 * Concatenate all `scripts` into one script file and use that file for `main`
-* Install Components into `vendor-dir` and symlink all scripts/styles instead?
 * Determine if `component-baseurl` is the correct name for it
-* Install to `components/[vendor]-[package]` rather than `components/[package]`?
 
 Not Invented Here
 -----------------

@@ -13,7 +13,6 @@ namespace ComponentInstaller\Process;
 
 use Composer\Composer;
 use Composer\Config;
-use Composer\IO\IOInterface;
 use Composer\Package\Package;
 use Composer\Json\JsonFile;
 

@@ -11,7 +11,6 @@
 
 namespace ComponentInstaller\Process;
 
-use Composer\IO\IOInterface;
 use Composer\Composer;
 use Composer\Package\Package;
 use Composer\Package\Loader\ArrayLoader;
@@ -67,11 +66,11 @@ class CopyProcess extends Process
                             try {
                                 chdir(dirname($destination));
                                 symlink($relative, $fullDestination);
-                            }
-                            catch (\ErrorException $e) {
+                            } catch (\ErrorException $e) {
                                 // If Symlinking failed, try copying.
                                 if (!copy($relative, $fullDestination)) {
                                     $this->io->write(sprintf('<error>Failed to produce %s as %s.</error>', $fullDestination, $relative));
+
                                     return false;
                                 }
                             }

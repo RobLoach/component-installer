@@ -11,11 +11,9 @@
 
 namespace Composer\Test;
 
-use Composer\Installer\LibraryInstaller;
 use Composer\Test\Installer\LibraryInstallerTest;
 use ComponentInstaller\Installer;
 use Composer\Package\Package;
-use Composer\Package\RootPackage;
 use Composer\Composer;
 use Composer\Config;
 

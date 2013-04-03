@@ -11,7 +11,6 @@
 
 namespace ComponentInstaller\Process;
 
-use Composer\IO\IOInterface;
 use Composer\Composer;
 use Composer\Config;
 use Composer\Package\Package;
