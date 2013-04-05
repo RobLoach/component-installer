@@ -143,6 +143,7 @@ class RequireJsProcess extends Process
             foreach ($candidates as $candidate) {
                 if (file_exists($candidate)) {
                     $assets->add(new FileAsset($candidate));
+                    break;
                 }
             }
         }
