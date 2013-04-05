@@ -16,23 +16,20 @@ use Composer\Composer;
 use ComponentInstaller\Process\RequireCssProcess;
 use Composer\Config;
 use Composer\IO\NullIO;
+use Composer\Util\Filesystem;
 
 /**
  * Tests Process.
  */
-class RequireCssProcessTest extends \PHPUnit_Framework_TestCase
+class RequireCssProcessTest extends ProcessTest
 {
     protected $process;
-    protected $composer;
-    protected $io;
 
     public function setUp()
     {
-        $this->composer = new Composer();
-        $this->io = new NullIO();
+        parent::setUp();
         $this->process = new RequireCssProcess($this->composer, $this->io);
     }
-
     /**
      * testPackageStyles
      *
@@ -40,9 +37,7 @@ class RequireCssProcessTest extends \PHPUnit_Framework_TestCase
      */
     public function testPackageStyles(array $packages, array $config, $expected = null)
     {
-        $configObject = new Config();
-        $configObject->merge(array('config' => $config));
-        $this->composer->setConfig($configObject);
+        $this->composer->getConfig()->merge(array('config' => $config));
         $this->process->init();
         $result = $this->process->packageStyles($packages);
         $this->assertEquals($result, $expected, sprintf('Fail to get proper expected require.css content'));

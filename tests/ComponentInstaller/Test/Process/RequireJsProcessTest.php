@@ -20,16 +20,13 @@ use Composer\IO\NullIO;
 /**
  * Tests Process.
  */
-class RequireJsProcessTest extends \PHPUnit_Framework_TestCase
+class RequireJsProcessTest extends ProcessTest
 {
     protected $process;
-    protected $composer;
-    protected $io;
 
     public function setUp()
     {
-        $this->composer = new Composer();
-        $this->io = new NullIO();
+        parent::setUp();
         $this->process = new RequireJsProcess($this->composer, $this->io);
     }
 
@@ -75,9 +72,7 @@ EOT;
      */
     public function testRequireJson(array $packages, array $config, $expected = null)
     {
-        $configObject = new Config();
-        $configObject->merge(array('config' => $config));
-        $this->composer->setConfig($configObject);
+        $this->composer->getConfig()->merge(array('config' => $config));
         $this->process->init();
         $result = $this->process->requireJson($packages);
         $this->assertEquals($result, $expected, sprintf('Fail to get proper expected require.js configuration'));
@@ -132,7 +127,7 @@ EOT;
             'extra' => array(
                 'component' => array(
                     'scripts' => array(
-                        'jquery.js'
+                        'jquery.js',
                     )
                 )
             )
@@ -142,7 +137,6 @@ EOT;
             'packages' => array(
                 array(
                     'name' => 'jquery',
-                    'main' => 'jquery.js',
                 ),
             ),
             'baseUrl' => 'components',
@@ -202,7 +196,6 @@ EOT;
             'packages' => array(
                 array(
                     'name' => 'backbone',
-                    'main' => 'backbone.js',
                 ),
             ),
             'shim' => array(
@@ -224,11 +217,9 @@ EOT;
             'packages' => array(
                 array(
                     'name' => 'backbone',
-                    'main' => 'backbone.js',
                 ),
                 array(
                     'name' => 'jquery',
-                    'main' => 'jquery.js',
                 ),
             ),
             'shim' => array(
@@ -266,6 +257,30 @@ EOT;
             'config' => array(
                 'packagewithconfig' => array(
                     'color' => 'blue',
+                ),
+            ),
+            'baseUrl' => 'components',
+        );
+        $tests[] = array($packages, array(), $expected);
+
+        // Test building the JavaScript file.
+        $packageWithScripts = array(
+            'name' => 'components/foobar',
+            'type' => 'component',
+            'extra' => array(
+                'component' => array(
+                    'scripts' => array(
+                        __DIR__.'/../Resources/test.js',
+                    ),
+                ),
+            ),
+        );
+        $packages = array($packageWithScripts);
+        $expected = array(
+            'packages' => array(
+                array(
+                    'name' => 'foobar',
+                    'main' => 'foobar-build.js'
                 ),
             ),
             'baseUrl' => 'components',

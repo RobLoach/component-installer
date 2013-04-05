@@ -15,6 +15,9 @@ use Composer\Composer;
 use Composer\Config;
 use Composer\Package\Package;
 use Composer\Json\JsonFile;
+use Assetic\Asset\AssetCollection;
+use Assetic\Asset\FileAsset;
+use Composer\Util\Filesystem;
 
 class RequireJsProcess extends Process
 {
@@ -94,9 +97,12 @@ class RequireJsProcess extends Process
 
             // Build the "main" directive.
             $scripts = isset($options['scripts']) ? $options['scripts'] : array();
-            // @todo Aggregate all "scripts" together into a build.js?
-            if (isset($scripts[0])) {
-                $component['main'] = $scripts[0];
+            if (!empty($scripts)) {
+                // Put all scripts into a build.js file.
+                $result = $this->aggregateScripts($this->componentDir.DIRECTORY_SEPARATOR.$name, $scripts, $name.'-build.js');
+                if ($result) {
+                    $component['main'] = $name.'-build.js';
+                }
             }
 
             // Add the package to the scripts.
@@ -119,6 +125,38 @@ class RequireJsProcess extends Process
         $json['baseUrl'] = $this->baseUrl;
 
         return $json;
+    }
+
+    /**
+     * Aggregate all scripts together into one destination file.
+     */
+    public function aggregateScripts($componentDir, array $scripts, $file)
+    {
+        // Aggregate all the assets into one file.
+        $assets = new AssetCollection();
+        foreach ($scripts as $script) {
+            // Scan for potential matches.
+            $candidates = array(
+                $componentDir.DIRECTORY_SEPARATOR.$script,
+                $script,
+            );
+            foreach ($candidates as $candidate) {
+                if (file_exists($candidate)) {
+                    $assets->add(new FileAsset($candidate));
+                }
+            }
+        }
+        $js = $assets->dump();
+
+        // Write the file if there are any JavaScript assets.
+        if (!empty($js)) {
+            $fs = new Filesystem();
+            $destination = $componentDir.DIRECTORY_SEPARATOR.$file;
+            $fs->ensureDirectoryExists(dirname($destination));
+            return file_put_contents($destination, $js);
+        }
+
+        return false;
     }
 
     /**

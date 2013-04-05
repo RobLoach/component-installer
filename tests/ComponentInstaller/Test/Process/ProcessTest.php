@@ -13,12 +13,56 @@ namespace Composer\Test\Process;
 
 use ComponentInstaller\Process\Process;
 use Composer\Composer;
+use Composer\Config;
+use Composer\IO\NullIO;
+use Composer\Util\Filesystem;
 
 /**
  * Tests Process.
  */
 class ProcessTest extends \PHPUnit_Framework_TestCase
 {
+    protected $composer;
+    protected $config;
+    protected $io;
+    protected $filesystem;
+    protected $componentDir;
+    protected $vendorDir;
+    protected $binDir;
+
+    public function setUp()
+    {
+        $this->filesystem = new Filesystem();
+        $this->composer = new Composer();
+        $this->config = new Config();
+        $this->io = new NullIO();
+
+        $this->componentDir = realpath(sys_get_temp_dir()).DIRECTORY_SEPARATOR.'component-installer-componentDir';
+        $this->vendorDir = realpath(sys_get_temp_dir()).DIRECTORY_SEPARATOR.'component-installer-vendorDir';
+        $this->binDir = realpath(sys_get_temp_dir()).DIRECTORY_SEPARATOR.'component-installer-binDir';
+
+        foreach (array($this->componentDir, $this->vendorDir, $this->binDir) as $dir) {
+            if (is_dir($dir)) {
+                $this->filesystem->removeDirectory($dir);
+            }
+            $this->filesystem->ensureDirectoryExists($dir);
+        }
+        $this->config->merge(array(
+            'config' => array(
+                'vendor-dir' => $this->vendorDir,
+                'component-dir' => $this->componentDir,
+                'bin-dir' => $this->binDir,
+            )
+        ));
+        $this->composer->setConfig($this->config);
+    }
+
+    protected function tearDown()
+    {
+        foreach (array($this->componentDir, $this->vendorDir, $this->binDir) as $dir) {
+            $this->filesystem->removeDirectory($dir);
+        }
+    }
 
     /**
      * testGetComponentName
@@ -27,7 +71,7 @@ class ProcessTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetComponentName($prettyName, array $extra, $expected)
     {
-        $process = new Process(new Composer());
+        $process = new Process($this->composer, $this->io);
         $result = $process->getComponentName($prettyName, array('component' => $extra));
         $this->assertEquals($result, $expected, sprintf('Fail to get proper component name for %s', $prettyName));
     }
