@@ -56,25 +56,8 @@ class CopyProcess extends Process
                             // Ensure the directory is available.
                             $fs->ensureDirectoryExists(dirname($destination));
 
-                            // Delete the file before creating its mirror.
-                            $fs->remove($destination);
-
-                            // Symlink the file using a relative path from the destination.
-                            $cwd = getcwd();
-                            $fullDestination = $cwd.DIRECTORY_SEPARATOR.$destination;
-                            $relative = $fs->findShortestPath($fullDestination, realpath($source));
-                            try {
-                                chdir(dirname($destination));
-                                symlink($relative, $fullDestination);
-                            } catch (\ErrorException $e) {
-                                // If Symlinking failed, try copying.
-                                if (!copy($relative, $fullDestination)) {
-                                    $this->io->write(sprintf('<error>Failed to produce %s as %s.</error>', $fullDestination, $relative));
-
-                                    return false;
-                                }
-                            }
-                            chdir($cwd);
+                            // Copy the file to its destination.
+                            copy($source, $destination);
                         }
                     }
                 }
