@@ -15,7 +15,6 @@ use ComponentInstaller\Process\Process;
 use Composer\Composer;
 use ComponentInstaller\Process\RequireJsProcess;
 use Composer\Config;
-use Composer\IO\NullIO;
 
 /**
  * Tests Process.

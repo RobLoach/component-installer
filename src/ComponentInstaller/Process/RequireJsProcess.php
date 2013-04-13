@@ -154,6 +154,7 @@ class RequireJsProcess extends Process
             $fs = new Filesystem();
             $destination = $componentDir.DIRECTORY_SEPARATOR.$file;
             $fs->ensureDirectoryExists(dirname($destination));
+
             return file_put_contents($destination, $js);
         }
 

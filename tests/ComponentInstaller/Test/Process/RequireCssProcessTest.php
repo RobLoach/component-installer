@@ -15,8 +15,6 @@ use ComponentInstaller\Process\Process;
 use Composer\Composer;
 use ComponentInstaller\Process\RequireCssProcess;
 use Composer\Config;
-use Composer\IO\NullIO;
-use Composer\Util\Filesystem;
 
 /**
  * Tests Process.
