@@ -25,6 +25,7 @@ class RequireJsProcess extends Process
      * The base URL for the require.js configuration.
      */
     protected $baseUrl = 'components';
+    protected $fs;
 
     public function getMessage()
     {
@@ -38,6 +39,8 @@ class RequireJsProcess extends Process
             $this->baseUrl = $this->config->get('component-baseurl');
         }
 
+        $this->fs = new Filesystem();
+
         return $output;
     }
 
@@ -46,7 +49,11 @@ class RequireJsProcess extends Process
         // Construct the require.js and stick it in the destination.
         $json = $this->requireJson($this->packages, $this->config);
         $requireConfig = $this->requireJs($json);
-        if (file_put_contents($this->componentDir . '/require.config.js', $requireConfig) === FALSE) {
+
+        // Attempt to write the require.config.js file.
+        $destination = $this->componentDir . '/require.config.js';
+        $this->fs->ensureDirectoryExists(dirname($destination));
+        if (file_put_contents($destination, $requireConfig) === FALSE) {
             $this->io->write('<error>Error writing require.config.js</error>');
 
             return false;
@@ -151,9 +158,8 @@ class RequireJsProcess extends Process
 
         // Write the file if there are any JavaScript assets.
         if (!empty($js)) {
-            $fs = new Filesystem();
             $destination = $componentDir.DIRECTORY_SEPARATOR.$file;
-            $fs->ensureDirectoryExists(dirname($destination));
+            $this->fs->ensureDirectoryExists(dirname($destination));
 
             return file_put_contents($destination, $js);
         }
