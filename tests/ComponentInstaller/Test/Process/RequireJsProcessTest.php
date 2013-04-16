@@ -86,11 +86,6 @@ EOT;
         );
         $packages = array($packageWithoutExtra);
         $expected = array(
-            'packages' => array(
-                array(
-                    'name' => 'packagewithoutextra',
-                ),
-            ),
             'baseUrl' => 'components',
         );
         $tests[] = array($packages, array(), $expected);
@@ -98,11 +93,6 @@ EOT;
         // Test switching the component directory.
         $packages = array($packageWithoutExtra);
         $expected = array(
-            'packages' => array(
-                array(
-                    'name' => 'packagewithoutextra',
-                ),
-            ),
             'baseUrl' => 'components',
         );
         $tests[] = array($packages, array('component-dir' => 'otherdir'), $expected);
@@ -110,11 +100,6 @@ EOT;
         // Test switching the baseUrl.
         $packages = array($packageWithoutExtra);
         $expected = array(
-            'packages' => array(
-                array(
-                    'name' => 'packagewithoutextra',
-                ),
-            ),
             'baseUrl' => '/another/path',
         );
         $tests[] = array($packages, array('component-baseurl' => '/another/path'), $expected);
@@ -133,11 +118,6 @@ EOT;
         );
         $packages = array($jquery);
         $expected = array(
-            'packages' => array(
-                array(
-                    'name' => 'jquery',
-                ),
-            ),
             'baseUrl' => 'components',
         );
         $tests[] = array($packages, array(), $expected);
@@ -157,11 +137,6 @@ EOT;
         );
         $packages = array($underscore);
         $expected = array(
-            'packages' => array(
-                array(
-                    'name' => 'underscore',
-                ),
-            ),
             'shim' => array(
                 'underscore' => array(
                     'exports' => '_',
@@ -192,11 +167,6 @@ EOT;
         );
         $packages = array($backbone);
         $expected = array(
-            'packages' => array(
-                array(
-                    'name' => 'backbone',
-                ),
-            ),
             'shim' => array(
                 'backbone' => array(
                     'exports' => 'Backbone',
@@ -213,14 +183,6 @@ EOT;
         // Test multiple packages.
         $packages = array($backbone, $jquery);
         $expected = array(
-            'packages' => array(
-                array(
-                    'name' => 'backbone',
-                ),
-                array(
-                    'name' => 'jquery',
-                ),
-            ),
             'shim' => array(
                 'backbone' => array(
                     'exports' => 'Backbone',
@@ -248,11 +210,6 @@ EOT;
         );
         $packages = array($packageWithConfig);
         $expected = array(
-            'packages' => array(
-                array(
-                    'name' => 'packagewithconfig',
-                ),
-            ),
             'config' => array(
                 'packagewithconfig' => array(
                     'color' => 'blue',

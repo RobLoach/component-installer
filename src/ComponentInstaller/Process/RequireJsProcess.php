@@ -108,12 +108,14 @@ class RequireJsProcess extends Process
                 // Put all scripts into a build.js file.
                 $result = $this->aggregateScripts($this->componentDir.DIRECTORY_SEPARATOR.$name, $scripts, $name.'-build.js');
                 if ($result) {
+                    // If the aggregation was successful, add the script to the
+                    // packages array.
                     $component['main'] = $name.'-build.js';
+
+                    // Add the component to the packages array.
+                    $json['packages'][] = $component;
                 }
             }
-
-            // Add the package to the scripts.
-            $json['packages'][] = $component;
 
             // Add the shim definition.
             $shim = isset($options['shim']) ? $options['shim'] : array();
