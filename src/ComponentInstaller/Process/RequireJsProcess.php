@@ -44,7 +44,7 @@ class RequireJsProcess extends Process
         return $output;
     }
 
-    public function process($message = '')
+    public function process()
     {
         // Construct the require.js and stick it in the destination.
         $json = $this->requireJson($this->packages, $this->config);

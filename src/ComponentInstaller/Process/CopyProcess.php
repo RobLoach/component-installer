@@ -20,6 +20,9 @@ class CopyProcess extends Process
 {
     protected $installationManager;
 
+    /**
+     * Initialized the process.
+     */
     public function init()
     {
         $output = parent::init();
@@ -33,15 +36,23 @@ class CopyProcess extends Process
         return '  <comment>Copying assets to component directory</comment>';
     }
 
-    public function process($message = '')
+    public function process()
+    {
+        return $this->copy($this->packages);
+    }
+
+    public function copy($packages)
     {
         // Mirror each package's assets into the component directory.
         $fs = new Filesystem();
-        foreach ($this->packages as $package) {
+        foreach ($packages as $package) {
+            // Retrieve some information about the package.
             $packageDir = $this->getVendorDir($package);
             $name = isset($package['name']) ? $package['name'] : '__component__';
             $extra = isset($package['extra']) ? $package['extra'] : array();
             $componentName = $this->getComponentName($name, $extra);
+
+            // Cycle through each asset type.
             $fileType = array('scripts', 'styles', 'files');
             foreach ($fileType as $type) {
                 // Only act on the files if they're available.

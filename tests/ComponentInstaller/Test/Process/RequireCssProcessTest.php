@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Composer\Test\Process;
+namespace ComponentInstaller\Test\Process;
 
 use ComponentInstaller\Process\Process;
 use Composer\Composer;

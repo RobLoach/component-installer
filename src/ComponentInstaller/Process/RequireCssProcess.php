@@ -26,7 +26,7 @@ class RequireCssProcess extends Process
         return '  <comment>Building require.css</comment>';
     }
 
-    public function process($message = '')
+    public function process()
     {
         $filters = new FilterCollection(array(
             new CssRewriteFilter(),

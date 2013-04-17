@@ -30,6 +30,9 @@ class Process implements ProcessInterface
         $this->io = isset($io) ? $io : new NullIO();
     }
 
+    /**
+     * Initializes the process.
+     */
     public function init()
     {
         // Display a status update to the user.

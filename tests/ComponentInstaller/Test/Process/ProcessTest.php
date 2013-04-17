@@ -9,13 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Composer\Test\Process;
+namespace ComponentInstaller\Test\Process;
 
 use ComponentInstaller\Process\Process;
 use Composer\Composer;
 use Composer\Config;
 use Composer\IO\NullIO;
 use Composer\Util\Filesystem;
+use Composer\Installer\InstallationManager;
+use Composer\Installer\LibraryInstaller;
+use ComponentInstaller\Installer;
 
 /**
  * Tests Process.
@@ -29,6 +32,7 @@ class ProcessTest extends \PHPUnit_Framework_TestCase
     protected $componentDir;
     protected $vendorDir;
     protected $binDir;
+    protected $installationManager;
 
     public function setUp()
     {
@@ -55,6 +59,12 @@ class ProcessTest extends \PHPUnit_Framework_TestCase
             )
         ));
         $this->composer->setConfig($this->config);
+
+        // Set up the Installation Manager.
+        $this->installationManager = new InstallationManager();
+        $this->installationManager->addInstaller(new LibraryInstaller($this->io, $this->composer));
+        $this->installationManager->addInstaller(new Installer($this->io, $this->composer));
+        $this->composer->setInstallationManager($this->installationManager);
     }
 
     protected function tearDown()
