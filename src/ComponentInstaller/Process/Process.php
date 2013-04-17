@@ -3,7 +3,7 @@
 /*
  * This file is part of Component Installer.
  *
- * (c) Rob Loach <http://robloach.net>
+ * (c) Rob Loach (http://robloach.net)
  *
  * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
@@ -16,6 +16,11 @@ use Composer\Composer;
 use Composer\IO\NullIO;
 use Composer\Package\Dumper\ArrayDumper;
 
+/**
+ * The base Process type.
+ *
+ * Processes are initialized, and then run during installation.
+ */
 class Process implements ProcessInterface
 {
     protected $composer;
@@ -24,6 +29,9 @@ class Process implements ProcessInterface
     protected $packages = array();
     protected $componentDir = 'components';
 
+    /**
+     * {@inheritdoc}
+     */
     public function __construct(Composer $composer = null, IOInterface $io = null)
     {
         $this->composer = isset($composer) ? $composer : new Composer();
@@ -31,7 +39,7 @@ class Process implements ProcessInterface
     }
 
     /**
-     * Initializes the process.
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -68,11 +76,17 @@ class Process implements ProcessInterface
         return true;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getMessage()
     {
         return '  <info>Processing...</info>';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function process()
     {
         return false;
@@ -80,6 +94,14 @@ class Process implements ProcessInterface
 
     /**
      * Retrieves the component name for the component.
+     *
+     * @param string $prettyName
+     *   The Composer package name.
+     * @param array $extra
+     *   The extra config options sent from Composer.
+     *
+     * @return string
+     *   The name of the component, without its vendor name.
      */
     public function getComponentName($prettyName, array $extra = array())
     {

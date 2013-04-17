@@ -3,7 +3,7 @@
 /*
  * This file is part of Component Installer.
  *
- * (c) Rob Loach <http://robloach.net>
+ * (c) Rob Loach (http://robloach.net)
  *
  * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
@@ -17,12 +17,20 @@ use Composer\Composer;
 interface ProcessInterface
 {
     /**
-     * Construct a new process to act on the given Composer and IO.
+     * Create a new Process.
+     *
+     * @param Composer $composer
+     *   The Composer object to act on.
+     * @param IOInterface $io
+     *   Input/Output object to act on.
      */
     public function __construct(Composer $composer, IOInterface $io);
 
     /**
-     * Run through the process.
+     * Called when running through the process.
+     *
+     * @return boolean
+     *   True or false depending on whether the process was successful.
      */
     public function process();
 
@@ -35,7 +43,10 @@ interface ProcessInterface
     public function init();
 
     /**
-     * Provides a message summary for the process.
+     * When running through the process, display the returned message.
+     *
+     * @return string
+     *   The message to display to the user when running the Process.
      */
     public function getMessage();
 }

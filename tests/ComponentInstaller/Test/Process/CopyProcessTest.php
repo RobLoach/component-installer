@@ -3,7 +3,7 @@
 /*
  * This file is part of Component Installer.
  *
- * (c) Rob Loach <http://robloach.net>
+ * (c) Rob Loach (http://robloach.net)
  *
  * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
@@ -14,7 +14,6 @@ namespace ComponentInstaller\Test\Process;
 use ComponentInstaller\Process\Process;
 use Composer\Composer;
 use ComponentInstaller\Process\CopyProcess;
-use Composer\Config;
 
 /**
  * Tests CopyProcess.
@@ -44,7 +43,8 @@ class CopyProcessTest extends ProcessTest
         }
     }
 
-    public function providerCopyStyles() {
+    public function providerCopyStyles()
+    {
         // Test collecting one style.
         $package = array(
             'name' => 'components/package',

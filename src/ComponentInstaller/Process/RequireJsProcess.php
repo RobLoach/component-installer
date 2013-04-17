@@ -3,7 +3,7 @@
 /*
  * This file is part of Component Installer.
  *
- * (c) Rob Loach <http://robloach.net>
+ * (c) Rob Loach (http://robloach.net)
  *
  * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
@@ -25,13 +25,23 @@ class RequireJsProcess extends Process
      * The base URL for the require.js configuration.
      */
     protected $baseUrl = 'components';
+
+    /**
+     * Filesystem object used to handle file system operations.
+     */
     protected $fs;
 
+    /**
+     * {@inheritdoc}
+     */
     public function getMessage()
     {
         return '  <comment>Building require.js</comment>';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function init()
     {
         $output = parent::init();
@@ -44,6 +54,9 @@ class RequireJsProcess extends Process
         return $output;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function process()
     {
         // Construct the require.js and stick it in the destination.

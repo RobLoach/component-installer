@@ -3,7 +3,7 @@
 /*
  * This file is part of Component Installer.
  *
- * (c) Rob Loach <http://robloach.net>
+ * (c) Rob Loach (http://robloach.net)
  *
  * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
@@ -18,19 +18,25 @@ use Composer\Composer;
 use Composer\Config;
 
 /**
- * Tests Component Installer.
+ * Tests registering Component Installer with Composer.
  */
 class InstallerTest extends LibraryInstallerTest
 {
     protected $componentDir = 'components';
 
+    /**
+     * {@inheritdoc}
+     */
     protected function setUp()
     {
+        // Run through the Library Installer Test set up.
         parent::setUp();
 
+        // Also be sure to set up the Component directory.
         $this->componentDir = realpath(sys_get_temp_dir()).DIRECTORY_SEPARATOR.'composer-test-component';
         $this->ensureDirectoryExistsAndClear($this->componentDir);
 
+        // Merge the component-dir setting in so that it applies correctly.
         $this->config->merge(array(
             'config' => array(
                 'component-dir' => $this->componentDir,
@@ -38,6 +44,9 @@ class InstallerTest extends LibraryInstallerTest
         ));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function tearDown()
     {
         $this->fs->removeDirectory($this->componentDir);
@@ -45,6 +54,9 @@ class InstallerTest extends LibraryInstallerTest
         return parent::tearDown();
     }
 
+    /**
+     * Tests that the Installer doesn't create the Component directory.
+     */
     public function testInstallerCreationShouldNotCreateComponentDirectory()
     {
         $this->fs->removeDirectory($this->componentDir);
@@ -53,7 +65,7 @@ class InstallerTest extends LibraryInstallerTest
     }
 
     /**
-     * testSupports
+     * Test the Installer's support() function.
      *
      * @param $type
      *   The type of library.
@@ -71,7 +83,7 @@ class InstallerTest extends LibraryInstallerTest
     }
 
     /**
-     * providerSupports
+     * Data provider for testComponentSupports().
      *
      * @see testComponentSupports()
      */

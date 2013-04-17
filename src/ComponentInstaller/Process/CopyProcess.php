@@ -3,7 +3,7 @@
 /*
  * This file is part of Component Installer.
  *
- * (c) Rob Loach <http://robloach.net>
+ * (c) Rob Loach (http://robloach.net)
  *
  * For the full copyright and license information, please view the LICENSE.md
  * file that was distributed with this source code.
@@ -21,7 +21,7 @@ class CopyProcess extends Process
     protected $installationManager;
 
     /**
-     * Initialized the process.
+     * Initialize the process.
      */
     public function init()
     {
@@ -31,19 +31,30 @@ class CopyProcess extends Process
         return $output;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getMessage()
     {
         return '  <comment>Copying assets to component directory</comment>';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function process()
     {
         return $this->copy($this->packages);
     }
 
+    /**
+     * Copy file assets from the given packages to the component directory.
+     *
+     * @param array $packages
+     *   An array of packages.
+     */
     public function copy($packages)
     {
-        // Mirror each package's assets into the component directory.
         $fs = new Filesystem();
         foreach ($packages as $package) {
             // Retrieve some information about the package.
@@ -68,7 +79,9 @@ class CopyProcess extends Process
                             $fs->ensureDirectoryExists(dirname($destination));
 
                             // Copy the file to its destination.
-                            copy($source, $destination);
+                            if (!copy($source, $destination)) {
+                                $this->io->writeln('  <warning>Error copying file to is destination</warning>');
+                            }
                         }
                     }
                 }
