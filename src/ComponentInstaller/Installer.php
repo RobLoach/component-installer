@@ -16,7 +16,7 @@ use Composer\Installer\LibraryInstaller;
 use Composer\Script\Event;
 
 /**
- * The Component Installer for Composer.
+ * Component Installer for Composer.
  */
 class Installer extends LibraryInstaller
 {
@@ -29,12 +29,13 @@ class Installer extends LibraryInstaller
     public function supports($packageType)
     {
         // Components are supported by all package types. We will just act on
-        // the root package if it's available.
+        // the root package's scripts if available.
         $rootPackage = isset($this->composer) ? $this->composer->getPackage() : null;
         if (isset($rootPackage)) {
+            // Act on the "post-autoload-dump" command so that we can act on all
+            // the installed packages.
             $scripts = $rootPackage->getScripts();
-            $scripts['post-install-cmd']['component-installer'] = 'ComponentInstaller\\Installer::postInstall';
-            $scripts['post-update-cmd']['component-installer'] = 'ComponentInstaller\\Installer::postInstall';
+            $scripts['post-autoload-dump']['component-installer'] = 'ComponentInstaller\\Installer::postAutoloadDump';
             $rootPackage->setScripts($scripts);
         }
 
@@ -43,10 +44,12 @@ class Installer extends LibraryInstaller
     }
 
     /**
-     * Post install/update command, called from the Composer scripts.
+     * Script callback; Acted on after the autoloader is dumped.
      */
-    public static function postInstall(Event $event)
+    public static function postAutoloadDump(Event $event)
     {
+        // Retrieve basic information about the environment and present a
+        // message to the user.
         $composer = $event->getComposer();
         $io = $event->getIO();
         $io->write('<info>Compiling Component files</info>');
