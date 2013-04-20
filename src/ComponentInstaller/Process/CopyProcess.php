@@ -79,9 +79,7 @@ class CopyProcess extends Process
                             $fs->ensureDirectoryExists(dirname($destination));
 
                             // Copy the file to its destination.
-                            if (!copy($source, $destination)) {
-                                $this->io->writeln('  <warning>Error copying file to is destination</warning>');
-                            }
+                            copy($source, $destination);
                         }
                     }
                 }
