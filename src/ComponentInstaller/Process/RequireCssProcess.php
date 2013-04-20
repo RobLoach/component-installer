@@ -19,6 +19,9 @@ use Assetic\Filter\CssRewriteFilter;
 use Assetic\Asset\FileAsset;
 use Assetic\Filter\FilterCollection;
 
+/**
+ * Builds the require.css file from all Component stylesheets.
+ */
 class RequireCssProcess extends Process
 {
     /**

@@ -16,8 +16,14 @@ use Composer\Package\Package;
 use Composer\Package\Loader\ArrayLoader;
 use Composer\Util\Filesystem;
 
+/**
+ * Process which copies components from their source to the components folder.
+ */
 class CopyProcess extends Process
 {
+    /**
+     * The Composer installation manager to find Component vendor directories.
+     */
     protected $installationManager;
 
     /**

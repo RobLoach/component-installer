@@ -27,20 +27,20 @@ interface ProcessInterface
     public function __construct(Composer $composer, IOInterface $io);
 
     /**
-     * Called when running through the process.
-     *
-     * @return boolean
-     *   True or false depending on whether the process was successful.
-     */
-    public function process();
-
-    /**
      * Initialize the process before its run.
      *
      * @return boolean
      *   Whether or not the process should continue after initialization.
      */
     public function init();
+
+    /**
+     * Called when running through the process.
+     *
+     * @return boolean
+     *   True or false depending on whether the process was successful.
+     */
+    public function process();
 
     /**
      * When running through the process, display the returned message.

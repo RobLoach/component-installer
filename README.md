@@ -7,8 +7,8 @@ Usage
 -----
 
 To install a Component with Composer, add the Component to your *composer.json*
-`require` key. The following will install [jQuery](http://jquery.com), with
-Component Installer, into *components/jquery*:
+`require` key. The following will install both [jQuery](http://jquery.com) and
+[normalize.css](http://necolas.github.io/normalize.css/):
 
 ``` json
 {
@@ -21,15 +21,22 @@ Component Installer, into *components/jquery*:
 
 ### Using the Component
 
-Component Installer will build a [RequireJS](http://requirejs.org) configuration
-for you, which allows autoloading the scripts only when. A *require.css* file is
-also compiled from all included Component stylesheets:
+The easiest approach is to use the Component statically. Just reference the
+Components manually using a `script` or `link` tag:
+
+``` html
+<script src="components/jquery/jquery.js"></script>
+<link href="components/normalize/normalize.css" rel="stylesheet" type="text/css">
+```
+
+For complex projects, a [RequireJS](http://requirejs.org) configuration is
+available, which allows autoloading scripts only when needed. A *require.css*
+file is also compiled, including all Component stylesheets:
 
 ``` html
 <!DOCTYPE html>
 <html>
     <head>
-        <title>jQuery+RequireJS Component Installer Sample</title>
         <link href="components/require.css" rel="stylesheet" type="text/css">
         <script src="components/require.js"></script>
     </head>
@@ -44,39 +51,10 @@ also compiled from all included Component stylesheets:
 </html>
 ```
 
-It is still possible to use the scripts directly. In this example, jQuery would
-be at *components/jquery/jquery.js*, and Normalize would be available at
-*components/normalize.css/normalize.css*.
+Configuration
+-------------
 
-### Creating a Component
-
-To set up a Component to be installed with Component Installer, have it
-`require` the package *robloach/component-installer* and set the `type` to
-*component*:
-
-``` json
-{
-    "name": "components/bootstrap",
-    "type": "component",
-    "require": {
-        "robloach/component-installer": "*"
-    },
-    "extra": {
-        "component": {
-            "scripts": [
-                "js/bootstrap.js"
-            ],
-            "styles": [
-                "css/bootstrap.css"
-            ],
-            "files": [
-                "img/glyphicons-halflings.png",
-                "img/glyphicons-halflings-white.png"
-            ]
-        }
-    }
-}
-```
+There are a number of ways to alter how Components are installed and used.
 
 ### Installation Directory
 
@@ -99,12 +77,12 @@ Defaults to `components`.
 
 ### Base URL
 
-While `component-dir` depicts where the components will be installed,
+While `component-dir` depicts where the Components will be installed,
 `component-baseurl` tells RequireJS the base path that will use when attempting
 to load the scripts in the web browser. It is important to make sure the
-`component-baseurl` points to the `component-dir` when loaded externally. You
-can read more about [`baseUrl`](http://requirejs.org/docs/api.html#config-baseUrl)
-in the RequireJS documentation.
+`component-baseurl` points to the `component-dir` when loaded externally. See
+more about [`baseUrl`](http://requirejs.org/docs/api.html#config-baseUrl) in the
+RequireJS documentation.
 
 ``` json
 {
@@ -120,9 +98,49 @@ in the RequireJS documentation.
 
 Defaults to `components`.
 
+Creating a Component
+--------------------
+
+To set up a Component to be installed with Component Installer, have it
+`require` the package *robloach/component-installer* and set the `type` to
+*component*:
+
+``` json
+{
+    "name": "components/bootstrap",
+    "type": "component",
+    "require": {
+        "robloach/component-installer": "*"
+    },
+    "extra": {
+        "component": {
+            "scripts": [
+                "js/bootstrap.js"
+            ],
+            "styles": [
+                "css/bootstrap.css"
+            ],
+            "files": [
+                "img/glyphicons-halflings.png",
+                "img/glyphicons-halflings-white.png",
+                "js/bootstrap.min.js",
+                "css/bootstrap.min.css"
+            ]
+        }
+    }
+}
+```
+
+* `scripts` - List of all the JavaScript files that will be concatenated
+together and processed when loading the Component.
+* `styles` - List of all the CSS files that should be concatenated together
+into the final *require.css* file.
+* `files` - Any additional file assets that should be copied into the Component
+directory.
+
 ### Component Name
 
-Components can provide their own component name. The following will install
+Components can provide their own Component name. The following will install
 jQuery to *components/myownjquery* rather than *components/jquery*:
 
 ``` json
@@ -137,10 +155,13 @@ jQuery to *components/myownjquery* rather than *components/jquery*:
 }
 ```
 
+Defaults to the package name, without the vendor.
+
 ### RequireJS Configuration
 
 Components can alter how [RequireJS](http://requirejs.org) registers and
-interacts with them:
+interacts with them by changing some of the [configuration
+options](http://www.requirejs.org/docs/api.html#config):
 
 ``` json
 {
@@ -170,14 +191,14 @@ Current available RequireJS options include:
 ### Packages Without Composer Support
 
 Using [`repositories`](http://getcomposer.org/doc/05-repositories.md#repositories)
-in *composer.json* allows the use of Component Installer in packages that don't
-explicitly provide their own *composer.json* information. In the following
-example, we define use of [html5shiv](https://github.com/aFarkas/html5shiv):
+in *composer.json* allows use of Component Installer in packages that don't
+explicitly provide their own *composer.json*. In the following example, we
+define use of [html5shiv](https://github.com/aFarkas/html5shiv):
 
 ``` json
 {
     "require": {
-        "afarkas/html5shiv": ">=3.6.2"
+        "afarkas/html5shiv": "3.6.*"
     },
     "repositories": [
         {
@@ -205,26 +226,16 @@ example, we define use of [html5shiv](https://github.com/aFarkas/html5shiv):
                 }
             }
         }
-    ],
-    "minimum-stability": "dev"
+    ]
 }
 ```
-
-Todo
-----
-
-* More [RequireJS Configurations](http://www.requirejs.org/docs/api.html#config)
-* Put together a list of Components that make use of Component Installer
-* Compile all the components into one file (`require.min.js`?)
-* Concatenate all `scripts` into one script file and use that file for `main`
-* Determine if `component-baseurl` is the correct name for it
 
 Not Invented Here
 -----------------
 
 There are many other amazing projects from which Component Installer was
-inspired. Many are much more mature than this one. It is encouraged to take a
-look at some of the [other great package management systems](http://github.com/wilmoore/frontend-packagers):
+inspired. It is encouraged to take a look at some of the [other great package
+management systems](http://github.com/wilmoore/frontend-packagers):
 * [npm](http://npmjs.org)
 * [bower](http://twitter.github.com/bower/)
 * [component](http://github.com/component/component)
@@ -236,5 +247,5 @@ look at some of the [other great package management systems](http://github.com/w
 License
 -------
 
-Component Installer is licensed under the MIT License - see the LICENSE file
-for details.
+Component Installer is licensed under the MIT License - see LICENSE.md for
+details.

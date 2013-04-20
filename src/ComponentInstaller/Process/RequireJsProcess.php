@@ -19,6 +19,9 @@ use Assetic\Asset\AssetCollection;
 use Assetic\Asset\FileAsset;
 use Composer\Util\Filesystem;
 
+/**
+ * Builds the require.js configuration.
+ */
 class RequireJsProcess extends Process
 {
     /**
@@ -150,7 +153,7 @@ class RequireJsProcess extends Process
     }
 
     /**
-     * Aggregate all scripts together into one destination file.
+     * Concatenate all scripts together into one destination file.
      */
     public function aggregateScripts($componentDir, array $scripts, $file)
     {
