@@ -121,8 +121,7 @@ To set up a Component to be installed with Component Installer, have it
                 "css/bootstrap.css"
             ],
             "files": [
-                "img/glyphicons-halflings.png",
-                "img/glyphicons-halflings-white.png",
+                "img/*.png",
                 "js/bootstrap.min.js",
                 "css/bootstrap.min.css"
             ]

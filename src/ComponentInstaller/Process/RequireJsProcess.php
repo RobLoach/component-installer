@@ -17,6 +17,7 @@ use Composer\Package\Package;
 use Composer\Json\JsonFile;
 use Assetic\Asset\AssetCollection;
 use Assetic\Asset\FileAsset;
+use Assetic\Asset\GlobAsset;
 use Composer\Util\Filesystem;
 
 /**
@@ -160,17 +161,12 @@ class RequireJsProcess extends Process
         // Aggregate all the assets into one file.
         $assets = new AssetCollection();
         foreach ($scripts as $script) {
-            // Scan for potential matches.
+            // Scan for potential match using glob() assets.
             $candidates = array(
                 $componentDir.DIRECTORY_SEPARATOR.$script,
                 $script,
             );
-            foreach ($candidates as $candidate) {
-                if (file_exists($candidate)) {
-                    $assets->add(new FileAsset($candidate));
-                    break;
-                }
-            }
+            $assets->add(new GlobAsset($candidates));
         }
         $js = $assets->dump();
 

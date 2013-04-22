@@ -226,7 +226,7 @@ EOT;
             'extra' => array(
                 'component' => array(
                     'scripts' => array(
-                        __DIR__.'/../Resources/test.js',
+                        'tests/ComponentInstaller/Test/Resources/test.js',
                     ),
                 ),
             ),
@@ -237,6 +237,29 @@ EOT;
                 array(
                     'name' => 'foobar',
                     'main' => 'foobar-build.js'
+                ),
+            ),
+            'baseUrl' => 'components',
+        );
+        $tests[] = array($packages, array(), $expected);
+
+        // Test building JavaScript files with glob().
+        $packageWithScripts = array(
+            'name' => 'components/foobar2',
+            'extra' => array(
+                'component' => array(
+                    'scripts' => array(
+                        'tests/ComponentInstaller/Test/Resources/*.js',
+                    ),
+                ),
+            ),
+        );
+        $packages = array($packageWithScripts);
+        $expected = array(
+            'packages' => array(
+                array(
+                    'name' => 'foobar2',
+                    'main' => 'foobar2-build.js'
                 ),
             ),
             'baseUrl' => 'components',

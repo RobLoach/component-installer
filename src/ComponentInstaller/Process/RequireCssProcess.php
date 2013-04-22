@@ -43,19 +43,21 @@ class RequireCssProcess extends Process
         $assets = new AssetCollection();
         $styles = $this->packageStyles($this->packages);
         foreach ($styles as $package => $packageStyles) {
-            foreach ($packageStyles as $style => $path) {
-                // The full path to the CSS file.
-                $assetPath = realpath($path);
-                // The root of the CSS file.
-                $sourceRoot = dirname($path);
-                // The style path to the CSS file when external.
-                $sourcePath = $package . '/' . $style;
-                // Where the final CSS will be generated.
-                $targetPath = $this->componentDir;
-                // Build the asset and add it to the collection.
-                $asset = new FileAsset($assetPath, $filters, $sourceRoot, $sourcePath);
-                $asset->setTargetPath($targetPath);
-                $assets->add($asset);
+            foreach ($packageStyles as $style => $paths) {
+                foreach ($paths as $path) {
+                    // The full path to the CSS file.
+                    $assetPath = realpath($path);
+                    // The root of the CSS file.
+                    $sourceRoot = dirname($path);
+                    // The style path to the CSS file when external.
+                    $sourcePath = $package . '/' . $style;
+                    // Where the final CSS will be generated.
+                    $targetPath = $this->componentDir;
+                    // Build the asset and add it to the collection.
+                    $asset = new FileAsset($assetPath, $filters, $sourceRoot, $sourcePath);
+                    $asset->setTargetPath($targetPath);
+                    $assets->add($asset);
+                }
             }
         }
 
@@ -99,10 +101,12 @@ class RequireCssProcess extends Process
                     $style,
                 );
                 foreach ($candidates as $candidate) {
-                    if (file_exists($candidate)) {
-                        // Provide the package name, style and full path.
-                        $styles[$name][$style] = $candidate;
-                        break;
+                    foreach (glob($candidate, GLOB_BRACE) as $file) {
+                        // Only act on files.
+                        if (!is_dir($file)) {
+                            // Provide the package name, style and full path.
+                            $styles[$name][$style][] = $file;
+                        }
                     }
                 }
             }

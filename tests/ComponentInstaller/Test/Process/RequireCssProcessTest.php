@@ -58,7 +58,9 @@ class RequireCssProcessTest extends ProcessTest
         $packages = array($package);
         $expected = array(
             'package' => array(
-                __DIR__ . '/../Resources/test.css' => __DIR__ . '/../Resources/test.css',
+                __DIR__ . '/../Resources/test.css' => array(
+                    __DIR__ . '/../Resources/test.css',
+                )
             )
         );
         $tests[] = array($packages, array(), $expected);
@@ -78,7 +80,9 @@ class RequireCssProcessTest extends ProcessTest
         $packages = array($package, $package2);
         $expected = array(
             'package' => array(
-                __DIR__ . '/../Resources/test.css' => __DIR__ . '/../Resources/test.css',
+                __DIR__ . '/../Resources/test.css' => array(
+                    __DIR__ . '/../Resources/test.css',
+                )
             )
         );
         $tests[] = array($packages, array(), $expected);
@@ -98,8 +102,35 @@ class RequireCssProcessTest extends ProcessTest
         $packages = array($package, $package3);
         $expected = array(
             'package' => array(
-                __DIR__ . '/../Resources/test.css' => __DIR__ . '/../Resources/test.css',
-                __DIR__ . '/../Resources/test2.css' => __DIR__ . '/../Resources/test2.css',
+                __DIR__ . '/../Resources/test.css' => array(
+                    __DIR__ . '/../Resources/test.css',
+                ),
+                __DIR__ . '/../Resources/test2.css' => array(
+                    __DIR__ . '/../Resources/test2.css',
+                ),
+            )
+        );
+        $tests[] = array($packages, array(), $expected);
+
+        // Test collecting a style that uses glob().
+        $package = array(
+            'name' => 'components/package',
+            'type' => 'component',
+            'extra' => array(
+                'component' => array(
+                    'styles' => array(
+                        __DIR__ . '/../Resources/*.css',
+                    ),
+                ),
+            ),
+        );
+        $packages = array($package);
+        $expected = array(
+            'package' => array(
+                __DIR__ . '/../Resources/*.css' => array(
+                    __DIR__ . '/../Resources/test.css',
+                    __DIR__ . '/../Resources/test2.css',
+                )
             )
         );
         $tests[] = array($packages, array(), $expected);

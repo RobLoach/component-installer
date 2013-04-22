@@ -188,6 +188,27 @@ class CopyProcessTest extends ProcessTest
             'twopackages2-diff/tests/ComponentInstaller/Test/Resources/img2.jpg',
         ));
 
+        // Test copying an asset with a glob().
+        $package = array(
+            'name' => 'components/differentcomponentname',
+            'version' => '1.2.3',
+            'type' => 'component',
+            'is-root' => true, // Set the root so that it knows to use the cwd.
+            'extra' => array(
+                'component' => array(
+                    'name' => 'diffname',
+                    'files' => array(
+                        'tests/ComponentInstaller/Test/Resources/*.jpg',
+                    ),
+                ),
+            ),
+        );
+        $packages = array($package);
+        $tests[] = array($packages, array(
+            'diffname/tests/ComponentInstaller/Test/Resources/img.jpg',
+            'diffname/tests/ComponentInstaller/Test/Resources/img2.jpg',
+        ));
+
         return $tests;
     }
 }

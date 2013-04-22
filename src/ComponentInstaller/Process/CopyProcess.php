@@ -77,15 +77,21 @@ class CopyProcess extends Process
                     foreach ($extra['component'][$type] as $file) {
                         // Make sure the file itself is available.
                         $source = $packageDir.DIRECTORY_SEPARATOR.$file;
-                        if (file_exists($source)) {
-                            // Find where the file destination should be.
-                            $destination = $this->componentDir.DIRECTORY_SEPARATOR.$componentName.DIRECTORY_SEPARATOR.$file;
+                        foreach (glob($source, GLOB_BRACE) as $filesource) {
+                            // Act on only files.
+                            if (!is_dir($filesource)) {
+                                // Find the final destination without the package directory.
+                                $withoutPackageDir = str_replace($packageDir.DIRECTORY_SEPARATOR, '', $filesource);
 
-                            // Ensure the directory is available.
-                            $fs->ensureDirectoryExists(dirname($destination));
+                                // Construct the final file destination.
+                                $destination = $this->componentDir.DIRECTORY_SEPARATOR.$componentName.DIRECTORY_SEPARATOR.$withoutPackageDir;
 
-                            // Copy the file to its destination.
-                            copy($source, $destination);
+                                // Ensure the directory is available.
+                                $fs->ensureDirectoryExists(dirname($destination));
+
+                                // Copy the file to its destination.
+                                copy($filesource, $destination);
+                            }
                         }
                     }
                 }
