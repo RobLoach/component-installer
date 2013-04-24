@@ -43,12 +43,6 @@ class Process implements ProcessInterface
      */
     public function init()
     {
-        // Display a status update to the user.
-        $message = $this->getMessage();
-        if (!empty($message)) {
-            $this->io->write($message);
-        }
-
         // Retrieve the configuration variables.
         $this->config = $this->composer->getConfig();
         if (isset($this->config)) {
@@ -74,14 +68,6 @@ class Process implements ProcessInterface
         }
 
         return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getMessage()
-    {
-        return '  <info>Processing...</info>';
     }
 
     /**

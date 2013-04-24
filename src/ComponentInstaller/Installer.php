@@ -52,7 +52,7 @@ class Installer extends LibraryInstaller
         // message to the user.
         $composer = $event->getComposer();
         $io = $event->getIO();
-        $io->write('<info>Compiling Component files</info>');
+        $io->write('<info>Compiling component files</info>');
 
         // Set up all the processes.
         $processes = array(

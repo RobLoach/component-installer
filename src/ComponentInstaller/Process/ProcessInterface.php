@@ -41,12 +41,4 @@ interface ProcessInterface
      *   True or false depending on whether the process was successful.
      */
     public function process();
-
-    /**
-     * When running through the process, display the returned message.
-     *
-     * @return string
-     *   The message to display to the user when running the Process.
-     */
-    public function getMessage();
 }

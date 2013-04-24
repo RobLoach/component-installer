@@ -40,14 +40,6 @@ class CopyProcess extends Process
     /**
      * {@inheritdoc}
      */
-    public function getMessage()
-    {
-        return '  <comment>Copying assets to component directory</comment>';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function process()
     {
         return $this->copy($this->packages);

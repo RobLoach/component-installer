@@ -38,14 +38,6 @@ class RequireJsProcess extends Process
     /**
      * {@inheritdoc}
      */
-    public function getMessage()
-    {
-        return '  <comment>Building require.js</comment>';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function init()
     {
         $output = parent::init();

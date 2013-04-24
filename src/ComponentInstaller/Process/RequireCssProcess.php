@@ -27,14 +27,6 @@ class RequireCssProcess extends Process
     /**
      * {@inheritdoc}
      */
-    public function getMessage()
-    {
-        return '  <comment>Building require.css</comment>';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function process()
     {
         $filters = new FilterCollection(array(
