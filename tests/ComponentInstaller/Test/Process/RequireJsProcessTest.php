@@ -236,7 +236,7 @@ EOT;
             'packages' => array(
                 array(
                     'name' => 'foobar',
-                    'main' => 'foobar-build.js'
+                    'main' => 'foobar-built.js'
                 ),
             ),
             'baseUrl' => 'components',
@@ -259,7 +259,7 @@ EOT;
             'packages' => array(
                 array(
                     'name' => 'foobar2',
-                    'main' => 'foobar2-build.js'
+                    'main' => 'foobar2-built.js'
                 ),
             ),
             'baseUrl' => 'components',
