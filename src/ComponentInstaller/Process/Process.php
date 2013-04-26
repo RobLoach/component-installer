@@ -56,6 +56,12 @@ class Process implements ProcessInterface
         if (isset($locker)) {
             $lockData = $locker->getLockData();
             $this->packages = isset($lockData['packages']) ? $lockData['packages'] : array();
+
+            // Also merge in any of the development packages.
+            $dev = isset($lockData['packages-dev']) ? $lockData['packages-dev'] : array();
+            foreach ($dev as $package) {
+                $this->packages[] = $package;
+            }
         }
 
         // Add the root package to the packages list.
