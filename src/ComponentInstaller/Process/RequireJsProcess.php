@@ -126,13 +126,13 @@ class RequireJsProcess extends Process
                 }
             }
 
-            // Add the shim definition.
+            // Add the shim definition for the package.
             $shim = isset($options['shim']) ? $options['shim'] : array();
             if (!empty($shim)) {
                 $json['shim'][$name] = $shim;
             }
 
-            // Add the config definition.
+            // Add the config definition for the package.
             $packageConfig = isset($options['config']) ? $options['config'] : array();
             if (!empty($packageConfig)) {
                 $json['config'][$name] = $packageConfig;
@@ -141,6 +141,15 @@ class RequireJsProcess extends Process
 
         // Provide the baseUrl.
         $json['baseUrl'] = $this->baseUrl;
+
+        // Merge in configuration options from the root.
+        if ($this->config->has('component')) {
+            $config = $this->config->get('component');
+            if (isset($config) && is_array($config)) {
+                // Use a recursive, distict array merge.
+                $json = $this->arrayMergeRecursiveDistinct($json, $config);
+            }
+        }
 
         return $json;
     }
@@ -201,5 +210,27 @@ if (typeof exports !== "undefined" && typeof module !== "undefined") {
 EOT;
 
         return $output;
+    }
+
+    /**
+     * Merges two arrays without switching individual values to arrays.
+     *
+     * @see array_merge()
+     * @see array_merge_recursive()
+     */
+    protected function arrayMergeRecursiveDistinct(array &$array1, array &$array2)
+    {
+        $merged = $array1;
+
+        foreach ($array2 as $key => &$value) {
+            if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
+                $merged[$key] = $this->arrayMergeRecursiveDistinct($merged[$key], $value);
+            }
+            else {
+                $merged[$key] = $value;
+            }
+        }
+
+        return $merged;
     }
 }

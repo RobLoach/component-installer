@@ -266,6 +266,69 @@ EOT;
         );
         $tests[] = array($packages, array(), $expected);
 
+        // Test bringing in config options from the root package.
+        $package = array(
+            'name' => 'components/foobar3',
+            'extra' => array(
+                'component' => array(
+                    'config' => array(
+                       'color' => 'blue',
+                    ),
+                ),
+            ),
+        );
+        $packages = array($package);
+        $config = array(
+            'component' => array(
+                'waitSeconds' => 3,
+                'baseUrl' => 'public',
+            ),
+        );
+        $expected = array(
+            'config' => array(
+                'foobar3' => array(
+                    'color' => 'blue',
+                ),
+            ),
+            'baseUrl' => 'public',
+            'waitSeconds' => 3,
+        );
+        $tests[] = array($packages, $config, $expected);
+
+        // Test overriding component config from root packages.
+        $package = array(
+            'name' => 'components/foobar3',
+            'extra' => array(
+                'component' => array(
+                    'config' => array(
+                       'color' => 'blue',
+                    ),
+                ),
+            ),
+        );
+        $packages = array($package);
+        $config = array(
+            'component' => array(
+                'waitSeconds' => 3,
+                'baseUrl' => 'public',
+                'config' => array(
+                    'foobar3' => array(
+                        'color' => 'red',
+                    ),
+                ),
+            ),
+        );
+        $expected = array(
+            'config' => array(
+                'foobar3' => array(
+                    'color' => 'red',
+                ),
+            ),
+            'baseUrl' => 'public',
+            'waitSeconds' => 3,
+        );
+        $tests[] = array($packages, $config, $expected);
+
         return $tests;
     }
 

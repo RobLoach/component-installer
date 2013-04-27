@@ -179,13 +179,19 @@ options](http://www.requirejs.org/docs/api.html#config):
                 "color": "blue"
             }
         }
+    },
+    "config": {
+        "component": {
+            "waitSeconds": 5
+        }
     }
 }
 ```
 
-Current available RequireJS options include:
+Current available RequireJS options for individual packages include:
 * [`shim`](http://www.requirejs.org/docs/api.html#config-shim)
 * [`config`](http://www.requirejs.org/docs/api.html#config-moduleconfig)
+* Anything that's passed through `config.component` is sent to Require.js
 
 ### Packages Without Composer Support
 
@@ -215,10 +221,12 @@ define use of [html5shiv](https://github.com/aFarkas/html5shiv):
                     "type": "git",
                     "reference": "3.6.2"
                 },
-                "component": {
-                    "scripts": [
-                        "dist/html5shiv.js"
-                    ]
+                "extra": {
+                    "component": {
+                        "scripts": [
+                            "dist/html5shiv.js"
+                        ]
+                    },
                 },
                 "require": {
                     "robloach/component-installer": "*"
