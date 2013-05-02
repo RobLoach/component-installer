@@ -32,11 +32,14 @@ class Installer extends LibraryInstaller
         // the root package's scripts if available.
         $rootPackage = isset($this->composer) ? $this->composer->getPackage() : null;
         if (isset($rootPackage)) {
-            // Act on the "post-autoload-dump" command so that we can act on all
-            // the installed packages.
-            $scripts = $rootPackage->getScripts();
-            $scripts['post-autoload-dump']['component-installer'] = 'ComponentInstaller\\Installer::postAutoloadDump';
-            $rootPackage->setScripts($scripts);
+            // Make sure the root package can override the available scripts.
+            if (method_exists($rootPackage, 'setScripts')) {
+                $scripts = $rootPackage->getScripts();
+                // Act on the "post-autoload-dump" command so that we can act on all
+                // the installed packages.
+                $scripts['post-autoload-dump']['component-installer'] = 'ComponentInstaller\\Installer::postAutoloadDump';
+                $rootPackage->setScripts($scripts);
+            }
         }
 
         // Explicitly state support of "component" packages.
