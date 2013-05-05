@@ -15,6 +15,8 @@ use Composer\IO\IOInterface;
 use Composer\Composer;
 use Composer\IO\NullIO;
 use Composer\Package\Dumper\ArrayDumper;
+use ComponentInstaller\Util\Filesystem;
+use Composer\Package\Loader\ArrayLoader;
 
 /**
  * The base Process type.
@@ -28,6 +30,12 @@ class Process implements ProcessInterface
     protected $config;
     protected $packages = array();
     protected $componentDir = 'components';
+    protected $fs;
+
+    /**
+     * The Composer installation manager to find Component vendor directories.
+     */
+    protected $installationManager;
 
     /**
      * {@inheritdoc}
@@ -36,6 +44,8 @@ class Process implements ProcessInterface
     {
         $this->composer = isset($composer) ? $composer : new Composer();
         $this->io = isset($io) ? $io : new NullIO();
+        $this->fs = new Filesystem();
+        $this->installationManager = $this->composer->getInstallationManager();
     }
 
     /**
@@ -112,5 +122,42 @@ class Process implements ProcessInterface
         }
 
         return $name;
+    }
+
+    /**
+     * Retrieves the component directory.
+     */
+    public function getComponentDir()
+    {
+        return $this->componentDir;
+    }
+
+    /**
+     * Sets the component directory.
+     */
+    public function setComponentDir($dir)
+    {
+        return $this->componentDir = $dir;
+    }
+
+    /**
+     * Retrieves the given package's vendor directory, where it's installed.
+     */
+    public function getVendorDir(array $package)
+    {
+        // The root package vendor directory is not handled by getInstallPath().
+        if (isset($package['is-root']) && $package['is-root'] === true) {
+            // @todo Handle cases where the working directory is not where the
+            // root package is installed.
+            return getcwd();
+        }
+
+        if (!isset($package['version'])) {
+            $package['version'] = '1.0.0';
+        }
+        $loader = new ArrayLoader();
+        $completePackage = $loader->load($package);
+
+        return $this->installationManager->getInstallPath($completePackage);
     }
 }

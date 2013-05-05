@@ -37,7 +37,7 @@ class RequireJsProcessTest extends ProcessTest
     public function testRequireJs(array $json = array(), $expected = '')
     {
         $result = $this->process->requireJs($json);
-        $this->assertEquals($result, $expected, sprintf('Fail to get proper expected require.js'));
+        $this->assertEquals($expected, $result);
     }
 
     public function providerRequireJs()
@@ -74,7 +74,7 @@ EOT;
         $this->composer->getConfig()->merge(array('config' => $config));
         $this->process->init();
         $result = $this->process->requireJson($packages);
-        $this->assertEquals($result, $expected, sprintf('Fail to get proper expected require.js configuration'));
+        $this->assertEquals($expected, $result);
     }
 
     public function providerRequireJson()
@@ -230,6 +230,7 @@ EOT;
                     ),
                 ),
             ),
+            'is-root' => true,
         );
         $packages = array($packageWithScripts);
         $expected = array(
@@ -253,6 +254,7 @@ EOT;
                     ),
                 ),
             ),
+            'is-root' => true,
         );
         $packages = array($packageWithScripts);
         $expected = array(

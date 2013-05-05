@@ -37,8 +37,6 @@ class BuildJsProcess extends Process
      */
     public function compile($packages)
     {
-        $fs = new Filesystem();
-
         // Set up the initial require-build.js file.
         $destination = $this->componentDir.DIRECTORY_SEPARATOR.'require-built.js';
         $require = $this->componentDir.DIRECTORY_SEPARATOR.'require.js';

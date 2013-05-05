@@ -17,8 +17,6 @@ use Composer\Package\Package;
 use Composer\Json\JsonFile;
 use Assetic\Asset\AssetCollection;
 use Assetic\Asset\FileAsset;
-use Assetic\Asset\GlobAsset;
-use Composer\Util\Filesystem;
 
 /**
  * Builds the require.js configuration.
@@ -31,11 +29,6 @@ class RequireJsProcess extends Process
     protected $baseUrl = 'components';
 
     /**
-     * Filesystem object used to handle file system operations.
-     */
-    protected $fs;
-
-    /**
      * {@inheritdoc}
      */
     public function init()
@@ -44,8 +37,6 @@ class RequireJsProcess extends Process
         if ($this->config->has('component-baseurl')) {
             $this->baseUrl = $this->config->get('component-baseurl');
         }
-
-        $this->fs = new Filesystem();
 
         return $output;
     }
@@ -115,7 +106,7 @@ class RequireJsProcess extends Process
             $scripts = isset($options['scripts']) ? $options['scripts'] : array();
             if (!empty($scripts)) {
                 // Put all scripts into a build.js file.
-                $result = $this->aggregateScripts($this->componentDir.DIRECTORY_SEPARATOR.$name, $scripts, $name.'-built.js');
+                $result = $this->aggregateScripts($package, $scripts, $name.DIRECTORY_SEPARATOR.$name.'-built.js');
                 if ($result) {
                     // If the aggregation was successful, add the script to the
                     // packages array.
@@ -157,23 +148,23 @@ class RequireJsProcess extends Process
     /**
      * Concatenate all scripts together into one destination file.
      */
-    public function aggregateScripts($componentDir, array $scripts, $file)
+    public function aggregateScripts($package, array $scripts, $file)
     {
         // Aggregate all the assets into one file.
         $assets = new AssetCollection();
         foreach ($scripts as $script) {
-            // Scan for potential match using glob() assets.
-            $candidates = array(
-                $componentDir.DIRECTORY_SEPARATOR.$script,
-                $script,
-            );
-            $assets->add(new GlobAsset($candidates));
+            // Collect each candidate from a glob file search.
+            $path = $this->getVendorDir($package).DIRECTORY_SEPARATOR.$script;
+            $matches = $this->fs->recursiveGlobFiles($path);
+            foreach ($matches as $match) {
+                $assets->add(new FileAsset($match));
+            }
         }
         $js = $assets->dump();
 
         // Write the file if there are any JavaScript assets.
         if (!empty($js)) {
-            $destination = $componentDir.DIRECTORY_SEPARATOR.$file;
+            $destination = $this->componentDir.DIRECTORY_SEPARATOR.$file;
             $this->fs->ensureDirectoryExists(dirname($destination));
 
             return file_put_contents($destination, $js);

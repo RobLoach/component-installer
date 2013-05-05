@@ -43,7 +43,7 @@ class Installer extends LibraryInstaller
         }
 
         // Explicitly state support of "component" packages.
-        return (bool) ($packageType === 'component');
+        return $packageType === 'component';
     }
 
     /**

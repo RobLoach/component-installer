@@ -38,7 +38,7 @@ class RequireCssProcessTest extends ProcessTest
         $this->composer->getConfig()->merge(array('config' => $config));
         $this->process->init();
         $result = $this->process->packageStyles($packages);
-        $this->assertEquals($result, $expected, sprintf('Fail to get proper expected require.css content'));
+        $this->assertEquals($expected, $result);
     }
 
     public function providerPackageStyles()
@@ -50,38 +50,40 @@ class RequireCssProcessTest extends ProcessTest
             'extra' => array(
                 'component' => array(
                     'styles' => array(
-                        __DIR__ . '/../Resources/test.css',
+                        'tests/ComponentInstaller/Test/Resources/test.css',
                     ),
                 ),
             ),
+            'is-root' => true,
         );
         $packages = array($package);
         $expected = array(
             'package' => array(
-                __DIR__ . '/../Resources/test.css' => array(
-                    __DIR__ . '/../Resources/test.css',
-                )
-            )
+                'tests/ComponentInstaller/Test/Resources/test.css' => array(
+                    realpath('tests/ComponentInstaller/Test/Resources/test.css'),
+                ),
+            ),
         );
         $tests[] = array($packages, array(), $expected);
 
         // Test collecting a style that doesn't exist.
         $package2 = array(
-            'name' => 'components/package',
+            'name' => 'components/package2',
             'type' => 'component',
             'extra' => array(
                 'component' => array(
                     'styles' => array(
-                        __DIR__ . '/../Resources/test-not-found.css',
+                        'tests/ComponentInstaller/Test/Resources/test-not-found.css',
                     ),
                 ),
             ),
+            'is-root' => true,
         );
         $packages = array($package, $package2);
         $expected = array(
             'package' => array(
-                __DIR__ . '/../Resources/test.css' => array(
-                    __DIR__ . '/../Resources/test.css',
+                'tests/ComponentInstaller/Test/Resources/test.css' => array(
+                    realpath('tests/ComponentInstaller/Test/Resources/test.css'),
                 )
             )
         );
@@ -89,24 +91,27 @@ class RequireCssProcessTest extends ProcessTest
 
         // Test collecting a style that doesn't exist.
         $package3 = array(
-            'name' => 'components/package',
+            'name' => 'components/package3',
             'type' => 'component',
             'extra' => array(
                 'component' => array(
                     'styles' => array(
-                        __DIR__ . '/../Resources/test2.css',
+                        'tests/ComponentInstaller/Test/Resources/test2.css',
                     ),
                 ),
             ),
+            'is-root' => true,
         );
         $packages = array($package, $package3);
         $expected = array(
             'package' => array(
-                __DIR__ . '/../Resources/test.css' => array(
-                    __DIR__ . '/../Resources/test.css',
+                'tests/ComponentInstaller/Test/Resources/test.css' => array(
+                    realpath('tests/ComponentInstaller/Test/Resources/test.css'),
                 ),
-                __DIR__ . '/../Resources/test2.css' => array(
-                    __DIR__ . '/../Resources/test2.css',
+            ),
+            'package3' => array(
+                'tests/ComponentInstaller/Test/Resources/test2.css' => array(
+                    realpath('tests/ComponentInstaller/Test/Resources/test2.css'),
                 ),
             )
         );
@@ -114,22 +119,23 @@ class RequireCssProcessTest extends ProcessTest
 
         // Test collecting a style that uses glob().
         $package = array(
-            'name' => 'components/package',
+            'name' => 'components/package4',
             'type' => 'component',
             'extra' => array(
                 'component' => array(
                     'styles' => array(
-                        __DIR__ . '/../Resources/*.css',
+                        'tests/ComponentInstaller/Test/Resources/*.css',
                     ),
                 ),
             ),
+            'is-root' => true,
         );
         $packages = array($package);
         $expected = array(
-            'package' => array(
-                __DIR__ . '/../Resources/*.css' => array(
-                    __DIR__ . '/../Resources/test.css',
-                    __DIR__ . '/../Resources/test2.css',
+            'package4' => array(
+                'tests/ComponentInstaller/Test/Resources/*.css' => array(
+                    realpath('tests/ComponentInstaller/Test/Resources/test.css'),
+                    realpath('tests/ComponentInstaller/Test/Resources/test2.css'),
                 )
             )
         );

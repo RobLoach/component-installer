@@ -74,36 +74,31 @@ class RequireCssProcess extends Process
      */
     public function packageStyles(array $packages)
     {
-        $styles = array();
+        $output = array();
 
         // Construct the packages configuration.
         foreach ($packages as $package) {
             // Retrieve information from the extra options.
             $extra = isset($package['extra']) ? $package['extra'] : array();
-            $options = isset($extra['component']) ? $extra['component'] : array();
-
-            // Construct the base details.
             $name = $this->getComponentName($package['name'], $extra);
+            $component = isset($extra['component']) ? $extra['component'] : array();
+            $styles = isset($component['styles']) ? $component['styles'] : array();
+            $vendorDir = $this->getVendorDir($package);
 
-            // Build the "main" directive.
-            $packageStyles = isset($options['styles']) ? $options['styles'] : array();
-            foreach ($packageStyles as $style) {
-                $candidates = array(
-                    $this->componentDir . '/' . $name . '/' . $style,
-                    $style,
-                );
-                foreach ($candidates as $candidate) {
-                    foreach (glob($candidate, GLOB_BRACE) as $file) {
-                        // Only act on files.
-                        if (!is_dir($file)) {
-                            // Provide the package name, style and full path.
-                            $styles[$name][$style][] = $file;
-                        }
-                    }
+            // Loop through each style.
+            foreach ($styles as $style) {
+                // Find the style path from the vendor directory.
+                $path = $vendorDir.'/'.$style;
+
+                // Search for the candidate with a glob recursive file search.
+                $files = $this->fs->recursiveGlobFiles($path);
+                foreach ($files as $file) {
+                    // Provide the package name, style and full path.
+                    $output[$name][$style][] = $file;
                 }
             }
         }
 
-        return $styles;
+        return $output;
     }
 }

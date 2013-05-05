@@ -22,8 +22,9 @@
         "kriswallsmith/assetic": "1.*"
     },
     "require-dev": {
-        "composer/composer": "1.0.*@dev"
+        "composer/composer": "1.*"
     },
+    "minimum-stability": "alpha",
     "archive": {
         "exclude": [
             "tests",

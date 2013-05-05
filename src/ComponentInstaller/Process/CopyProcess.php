@@ -13,7 +13,6 @@ namespace ComponentInstaller\Process;
 
 use Composer\Composer;
 use Composer\Package\Package;
-use Composer\Package\Loader\ArrayLoader;
 use Composer\Util\Filesystem;
 
 /**
@@ -21,22 +20,6 @@ use Composer\Util\Filesystem;
  */
 class CopyProcess extends Process
 {
-    /**
-     * The Composer installation manager to find Component vendor directories.
-     */
-    protected $installationManager;
-
-    /**
-     * Initialize the process.
-     */
-    public function init()
-    {
-        $output = parent::init();
-        $this->installationManager = $this->composer->getInstallationManager();
-
-        return $output;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -53,7 +36,6 @@ class CopyProcess extends Process
      */
     public function copy($packages)
     {
-        $fs = new Filesystem();
         foreach ($packages as $package) {
             // Retrieve some information about the package.
             $packageDir = $this->getVendorDir($package);
@@ -69,21 +51,20 @@ class CopyProcess extends Process
                     foreach ($extra['component'][$type] as $file) {
                         // Make sure the file itself is available.
                         $source = $packageDir.DIRECTORY_SEPARATOR.$file;
-                        foreach (glob($source, GLOB_BRACE) as $filesource) {
-                            // Act on only files.
-                            if (!is_dir($filesource)) {
-                                // Find the final destination without the package directory.
-                                $withoutPackageDir = str_replace($packageDir.DIRECTORY_SEPARATOR, '', $filesource);
 
-                                // Construct the final file destination.
-                                $destination = $this->componentDir.DIRECTORY_SEPARATOR.$componentName.DIRECTORY_SEPARATOR.$withoutPackageDir;
+                        // Perform a recursive glob file search on the pattern.
+                        foreach ($this->fs->recursiveGlobFiles($source) as $filesource) {
+                            // Find the final destination without the package directory.
+                            $withoutPackageDir = str_replace($packageDir.DIRECTORY_SEPARATOR, '', $filesource);
 
-                                // Ensure the directory is available.
-                                $fs->ensureDirectoryExists(dirname($destination));
+                            // Construct the final file destination.
+                            $destination = $this->componentDir.DIRECTORY_SEPARATOR.$componentName.DIRECTORY_SEPARATOR.$withoutPackageDir;
 
-                                // Copy the file to its destination.
-                                copy($filesource, $destination);
-                            }
+                            // Ensure the directory is available.
+                            $this->fs->ensureDirectoryExists(dirname($destination));
+
+                            // Copy the file to its destination.
+                            copy($filesource, $destination);
                         }
                     }
                 }
@@ -91,22 +72,5 @@ class CopyProcess extends Process
         }
 
         return true;
-    }
-
-    /**
-     * Retrieves the given package's vendor directory, where it's installed.
-     */
-    public function getVendorDir(array $package)
-    {
-        // The root package vendor directory is not handled by getInstallPath().
-        if (isset($package['is-root']) && $package['is-root'] === true) {
-            // @todo Handle cases where the working directory is not where the
-            // root package is installed.
-            return getcwd();
-        }
-        $loader = new ArrayLoader();
-        $completePackage = $loader->load($package);
-
-        return $this->installationManager->getInstallPath($completePackage);
     }
 }
