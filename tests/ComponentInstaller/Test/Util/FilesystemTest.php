@@ -41,9 +41,6 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
             array(
                 'tests/ComponentInstaller/Test/Resources/img.jpg',
                 'tests/ComponentInstaller/Test/Resources/img2.jpg',
-                'tests/ComponentInstaller/Test/Resources/subdir/img.jpg',
-                'tests/ComponentInstaller/Test/Resources/subdir/img3.jpg',
-                'tests/ComponentInstaller/Test/Resources/subdir/subdir2/img4.jpg',
                 'tests/ComponentInstaller/Test/Resources/test.css',
                 'tests/ComponentInstaller/Test/Resources/test.js',
                 'tests/ComponentInstaller/Test/Resources/test2.css',
@@ -64,11 +61,23 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
             array(
                 'tests/ComponentInstaller/Test/Resources/img.jpg',
                 'tests/ComponentInstaller/Test/Resources/img2.jpg',
-                'tests/ComponentInstaller/Test/Resources/subdir/img.jpg',
-                'tests/ComponentInstaller/Test/Resources/subdir/img3.jpg',
-                'tests/ComponentInstaller/Test/Resources/subdir/subdir2/img4.jpg',
             ),
             'tests/ComponentInstaller/Test/Resources/*.jpg',
+        );
+
+        $tests[] = array(
+            array(
+                'tests/ComponentInstaller/Test/Resources/img.jpg',
+                'tests/ComponentInstaller/Test/Resources/img2.jpg',
+            ),
+            'tests/ComponentInstaller/Test/Resources/*img*',
+        );
+
+        $tests[] = array(
+            array(
+                'tests/ComponentInstaller/Test/Resources/img.jpg',
+            ),
+            'tests/ComponentInstaller/Test/Resources/img.jpg',
         );
 
         $tests[] = array(
@@ -79,16 +88,7 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
                 'tests/ComponentInstaller/Test/Resources/subdir/img3.jpg',
                 'tests/ComponentInstaller/Test/Resources/subdir/subdir2/img4.jpg',
             ),
-            'tests/ComponentInstaller/Test/Resources/*img*',
-        );
-
-        $tests[] = array(
-            array(
-                'tests/ComponentInstaller/Test/Resources/img.jpg',
-                // @todo Do not perform a recursive search on non-glob matches.
-                'tests/ComponentInstaller/Test/Resources/subdir/img.jpg',
-            ),
-            'tests/ComponentInstaller/Test/Resources/img.jpg',
+            'tests/ComponentInstaller/Test/Resources/**img*.jpg',
         );
 
         return $tests;
@@ -120,11 +120,7 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
                 'tests/ComponentInstaller/Test/Resources/test.js',
                 'tests/ComponentInstaller/Test/Resources/test2.css',
                 'tests/ComponentInstaller/Test/Resources/test2.js',
-                'tests/ComponentInstaller/Test/Resources/subdir/img.jpg',
-                'tests/ComponentInstaller/Test/Resources/subdir/img3.jpg',
                 'tests/ComponentInstaller/Test/Resources/subdir',
-                'tests/ComponentInstaller/Test/Resources/subdir/subdir2',
-                'tests/ComponentInstaller/Test/Resources/subdir/subdir2/img4.jpg',
             ),
             'tests/ComponentInstaller/Test/Resources/*',
         );
@@ -141,9 +137,6 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
             array(
                 'tests/ComponentInstaller/Test/Resources/img.jpg',
                 'tests/ComponentInstaller/Test/Resources/img2.jpg',
-                'tests/ComponentInstaller/Test/Resources/subdir/img.jpg',
-                'tests/ComponentInstaller/Test/Resources/subdir/img3.jpg',
-                'tests/ComponentInstaller/Test/Resources/subdir/subdir2/img4.jpg',
             ),
             'tests/ComponentInstaller/Test/Resources/*.jpg',
         );
@@ -151,11 +144,18 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
         $tests[] = array(
             array(
                 'tests/ComponentInstaller/Test/Resources/img.jpg',
-                // @todo Find out how to do a recursive glob without matching
-                // straight files.
-                'tests/ComponentInstaller/Test/Resources/subdir/img.jpg',
             ),
             'tests/ComponentInstaller/Test/Resources/img.jpg',
+        );
+
+        $tests[] = array(
+            array(
+                'tests/ComponentInstaller/Test/Resources/subdir/img.jpg',
+                'tests/ComponentInstaller/Test/Resources/subdir/img3.jpg',
+                'tests/ComponentInstaller/Test/Resources/subdir/subdir2/img4.jpg',
+                'tests/ComponentInstaller/Test/Resources/subdir/subdir2',
+            ),
+            'tests/ComponentInstaller/Test/Resources/subdir/**',
         );
 
         return $tests;

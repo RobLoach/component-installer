@@ -19,10 +19,11 @@ use Composer\Util\Filesystem as BaseFilesystem;
 class Filesystem extends BaseFilesystem
 {
     /**
-     * Performs a recursive glob search with the given pattern.
+     * Performs a recursive-enabled glob search with the given pattern.
      *
      * @param string $pattern
-     *   The pattern passed to glob().
+     *   The pattern passed to glob(). If the pattern contains "**", then it
+     *   a recursive search will be used.
      * @param int $flags
      *   Flags to pass into glob().
      *
@@ -31,9 +32,14 @@ class Filesystem extends BaseFilesystem
      */
     public function recursiveGlob($pattern, $flags = 0)
     {
+        // Perform the glob search.
         $files = glob($pattern, $flags);
-        foreach (glob(dirname($pattern).'/*', GLOB_ONLYDIR|GLOB_NOSORT) as $dir) {
-            $files = array_merge($files, $this->recursiveGlob($dir.'/'.basename($pattern), $flags));
+
+        // Check if this is to be recursive.
+        if (strpos($pattern, '**') !== FALSE) {
+             foreach (glob(dirname($pattern).'/*', GLOB_ONLYDIR|GLOB_NOSORT) as $dir) {
+                 $files = array_merge($files, $this->recursiveGlob($dir.'/'.basename($pattern), $flags));
+             }
         }
 
         return $files;
