@@ -38,9 +38,11 @@ class CopyProcess extends Process
     {
         foreach ($packages as $package) {
             // Skip processing the package if it's a "component", because then
-            // it is already available in the component directory.
+            // it is already available in the component directory. Root packages
+            // are still to be processed, whether or not they're "components".
             $type = isset($package['type']) ? $package['type'] : 'library';
-            if ($type == 'component') {
+            $root = isset($package['is-root']) ? $package['is-root'] : false;
+            if ($type == 'component' && !$root) {
                 continue;
             }
 
