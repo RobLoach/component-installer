@@ -14,6 +14,7 @@ namespace ComponentInstaller;
 use Composer\Composer;
 use Composer\Installer\LibraryInstaller;
 use Composer\Script\Event;
+use Composer\Package\PackageInterface;
 
 /**
  * Component Installer for Composer.
@@ -24,7 +25,9 @@ class Installer extends LibraryInstaller
     /**
      * {@inheritDoc}
      *
-     * Components are supported by all packages.
+     * Components are supported by all packages. This checks wheteher or not the
+     * entire package is a "component", as well as injects the script to act
+     * on components embedded in packages that are not just "component" types.
      */
     public function supports($packageType)
     {
@@ -44,6 +47,32 @@ class Installer extends LibraryInstaller
 
         // Explicitly state support of "component" packages.
         return $packageType === 'component';
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * Components are to be installed directly into the "component-dir".
+     */
+    public function getInstallPath(PackageInterface $package)
+    {
+        // Parse the pretty name for the vendor and package name.
+        $name = $prettyName = $package->getPrettyName();
+        if (strpos($prettyName, '/') !== false) {
+            list($vendor, $name) = explode('/', $prettyName);
+        }
+
+        // Allow the component to define its own name.
+        $extra = $package->getExtra();
+        $component = isset($extra['component']) ? $extra['component'] : array();
+        if (isset($component['name'])) {
+            $name = $component['name'];
+        }
+
+        // Find where the component-dir is to be located.
+        $config = $this->composer->getConfig();
+        $componentDir = $config->has('component-dir') ? $config->get('component-dir') : 'components';
+        return $componentDir . DIRECTORY_SEPARATOR . $name;
     }
 
     /**

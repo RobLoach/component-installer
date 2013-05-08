@@ -49,7 +49,6 @@ class CopyProcessTest extends ProcessTest
         $package = array(
             'name' => 'components/package',
             'version' => '1.2.3',
-            'type' => 'component',
             'is-root' => true, // Set the root so that it knows to use the cwd.
             'extra' => array(
                 'component' => array(
@@ -68,7 +67,6 @@ class CopyProcessTest extends ProcessTest
         $package = array(
             'name' => 'components/packagewithtwostyles',
             'version' => '1.2.3',
-            'type' => 'component',
             'is-root' => true, // Set the root so that it knows to use the cwd.
             'extra' => array(
                 'component' => array(
@@ -89,7 +87,6 @@ class CopyProcessTest extends ProcessTest
         $package = array(
             'name' => 'components/stylethatdoesnotexist',
             'version' => '1.2.3',
-            'type' => 'component',
             'is-root' => true, // Set the root so that it knows to use the cwd.
             'extra' => array(
                 'component' => array(
@@ -109,7 +106,6 @@ class CopyProcessTest extends ProcessTest
         $package = array(
             'name' => 'components/allassets',
             'version' => '1.2.3',
-            'type' => 'component',
             'is-root' => true, // Set the root so that it knows to use the cwd.
             'extra' => array(
                 'component' => array(
@@ -138,7 +134,6 @@ class CopyProcessTest extends ProcessTest
         $package = array(
             'name' => 'components/differentcomponentname',
             'version' => '1.2.3',
-            'type' => 'component',
             'is-root' => true, // Set the root so that it knows to use the cwd.
             'extra' => array(
                 'component' => array(
@@ -158,7 +153,6 @@ class CopyProcessTest extends ProcessTest
         $package = array(
             'name' => 'components/twopackages1',
             'version' => '1.2.3',
-            'type' => 'component',
             'is-root' => true, // Set the root so that it knows to use the cwd.
             'extra' => array(
                 'component' => array(
@@ -171,7 +165,6 @@ class CopyProcessTest extends ProcessTest
         $package2 = array(
             'name' => 'components/twopackages2',
             'version' => '1.2.3',
-            'type' => 'component',
             'is-root' => true, // Set the root so that it knows to use the cwd.
             'extra' => array(
                 'component' => array(
@@ -192,7 +185,6 @@ class CopyProcessTest extends ProcessTest
         $package = array(
             'name' => 'components/differentcomponentname',
             'version' => '1.2.3',
-            'type' => 'component',
             'is-root' => true, // Set the root so that it knows to use the cwd.
             'extra' => array(
                 'component' => array(

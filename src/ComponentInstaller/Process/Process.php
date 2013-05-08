@@ -142,6 +142,9 @@ class Process implements ProcessInterface
 
     /**
      * Retrieves the given package's vendor directory, where it's installed.
+     *
+     * @param array $package
+     *   The package to retrieve the vendor directory for.
      */
     public function getVendorDir(array $package)
     {

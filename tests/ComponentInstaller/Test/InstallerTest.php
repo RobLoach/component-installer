@@ -13,6 +13,7 @@ namespace Composer\Test;
 
 use Composer\Test\Installer\LibraryInstallerTest;
 use ComponentInstaller\Installer;
+use Composer\Package\Loader\ArrayLoader;
 use Composer\Package\Package;
 use Composer\Composer;
 use Composer\Config;
@@ -93,6 +94,57 @@ class InstallerTest extends LibraryInstallerTest
         $tests[] = array('component', true);
         $tests[] = array('not-a-component', false);
         $tests[] = array('library', false);
+
+        return $tests;
+    }
+
+    /**
+     * Tests the Installer's getInstallPath function.
+     *
+     * @param $expected
+     *   The expected install path for the package.
+     * @param $package
+     *   The package to test upon.
+     *
+     * @dataProvider providerComponentGetInstallPath
+     *
+     * @see \ComponentInstaller\Installer::getInstallPath()
+     */
+    public function testComponentGetInstallPath($expected, $package) {
+        // Construct the mock objects.
+        $installer = new Installer($this->io, $this->composer, 'component');
+        $loader = new ArrayLoader();
+
+        // Test the results.
+        $result = $installer->getInstallPath($loader->load($package));
+        $this->assertEquals($this->componentDir . '/' . $expected, $result);
+    }
+
+    /**
+     * Data provider for testComponentGetInstallPath().
+     *
+     * @see testGetInstallPath()
+     */
+    public function providerComponentGetInstallPath()
+    {
+        $package = array(
+            'name' => 'foo/bar',
+            'type' => 'component',
+            'version' => '1.0.0',
+        );
+        $tests[] = array('bar', $package);
+
+        $package = array(
+            'name' => 'foo/bar2',
+            'version' => '1.0.0',
+            'type' => 'component',
+            'extra' => array(
+                'component' => array(
+                    'name' => 'foo',
+                ),
+            ),
+        );
+        $tests[] = array('foo', $package);
 
         return $tests;
     }
