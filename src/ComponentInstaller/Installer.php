@@ -15,12 +15,18 @@ use Composer\Composer;
 use Composer\Installer\LibraryInstaller;
 use Composer\Script\Event;
 use Composer\Package\PackageInterface;
+use Composer\Util\Filesystem;
 
 /**
  * Component Installer for Composer.
  */
 class Installer extends LibraryInstaller
 {
+
+    /**
+     * The location where Components are to be installed.
+     */
+    protected $componentDir;
 
     /**
      * {@inheritDoc}
@@ -69,10 +75,54 @@ class Installer extends LibraryInstaller
             $name = $component['name'];
         }
 
-        // Find where the component-dir is to be located.
+        // Find where the package should be located.
+        return $this->getComponentDir() . DIRECTORY_SEPARATOR . $name;
+    }
+
+    /**
+     * Initialize the Component directory, as well as the vendor directory.
+     */
+    protected function initializeVendorDir()
+    {
+        $this->componentDir = realpath($this->getComponentDir());
+        $this->filesystem->ensureDirectoryExists($this->componentDir);
+        return parent::initializeVendorDir();
+    }
+
+    /**
+     * Retrieves the Installer's provided component directory.
+     */
+    public function getComponentDir()
+    {
         $config = $this->composer->getConfig();
-        $componentDir = $config->has('component-dir') ? $config->get('component-dir') : 'components';
-        return $componentDir . DIRECTORY_SEPARATOR . $name;
+        return $config->has('component-dir') ? $config->get('component-dir') : 'components';
+    }
+
+    /**
+     * Remove both the installed code and files from the Component directory.
+     */
+    public function removeCode(PackageInterface $package)
+    {
+        $this->removeComponent($package);
+        return parent::removeCode($package);
+    }
+
+    /**
+     * Remove a Component's files from the Component directory.
+     */
+    public function removeComponent(PackageInterface $package)
+    {
+        $path = $this->getInstallPath($package);
+        return $this->filesystem->remove($path);
+    }
+
+    /**
+     * Before installing the Component, be sure its destination is clear first.
+     */
+    public function installCode(PackageInterface $package)
+    {
+        $this->removeComponent($package);
+        return parent::installCode($package);
     }
 
     /**
