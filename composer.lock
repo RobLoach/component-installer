@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "e569fa0a275a325029d95e638e24bbbf",
+    "hash": "363254275fed7e52a5a1b24f5f049151",
     "packages": [
         {
             "name": "kriswallsmith/assetic",
@@ -130,12 +130,12 @@
             "version": "1.0.0-alpha6",
             "source": {
                 "type": "git",
-                "url": "https://github.com/composer/composer",
+                "url": "https://github.com/composer/composer.git",
                 "reference": "1.0.0-alpha6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/composer/composer/archive/1.0.0-alpha6.zip",
+                "url": "https://api.github.com/repos/composer/composer/zipball/1.0.0-alpha6",
                 "reference": "1.0.0-alpha6",
                 "shasum": ""
             },
@@ -189,7 +189,7 @@
                 "dependency",
                 "package"
             ],
-            "time": "2012-10-23 01:54:25"
+            "time": "2012-10-23 08:54:25"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -395,9 +395,9 @@
 
     ],
     "minimum-stability": "alpha",
-    "stability-flags": [
-
-    ],
+    "stability-flags": {
+        "composer/composer": 15
+    },
     "platform": {
         "php": ">=5.3.2"
     },
