@@ -84,7 +84,7 @@ class Installer extends LibraryInstaller
      */
     protected function initializeVendorDir()
     {
-        $this->componentDir = realpath($this->getComponentDir());
+        $this->componentDir = $this->getComponentDir();
         $this->filesystem->ensureDirectoryExists($this->componentDir);
         return parent::initializeVendorDir();
     }
