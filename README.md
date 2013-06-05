@@ -58,7 +58,7 @@ There are a number of ways to alter how Components are installed and used.
 
 ### Installation Directory
 
-It is posssible to switch where Components are installed by changing the
+It is possible to switch where Components are installed by changing the
 `component-dir` option in your root *composer.json*'s `config`. The following
 will install jQuery to *public/jquery* rather than *components/jquery*:
 
