@@ -56,11 +56,12 @@ class Installer extends LibraryInstaller
     }
 
     /**
-     * {@inheritDoc}
+     * Gets the destination Component directory.
      *
-     * Components are to be installed directly into the "component-dir".
+     * @return string
+     *   The path to where the final Component should be installed.
      */
-    public function getInstallPath(PackageInterface $package)
+    public function getComponentPath(PackageInterface $package)
     {
         // Parse the pretty name for the vendor and package name.
         $name = $prettyName = $package->getPrettyName();
@@ -112,7 +113,7 @@ class Installer extends LibraryInstaller
      */
     public function removeComponent(PackageInterface $package)
     {
-        $path = $this->getInstallPath($package);
+        $path = $this->getComponentPath($package);
         return $this->filesystem->remove($path);
     }
 

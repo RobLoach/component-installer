@@ -99,33 +99,33 @@ class InstallerTest extends LibraryInstallerTest
     }
 
     /**
-     * Tests the Installer's getInstallPath function.
+     * Tests the Installer's getComponentPath function.
      *
      * @param $expected
      *   The expected install path for the package.
      * @param $package
      *   The package to test upon.
      *
-     * @dataProvider providerComponentGetInstallPath
+     * @dataProvider providerGetComponentPath
      *
-     * @see \ComponentInstaller\Installer::getInstallPath()
+     * @see \ComponentInstaller\Installer::getComponentPath()
      */
-    public function testComponentGetInstallPath($expected, $package) {
+    public function testGetComponentPath($expected, $package) {
         // Construct the mock objects.
         $installer = new Installer($this->io, $this->composer, 'component');
         $loader = new ArrayLoader();
 
         // Test the results.
-        $result = $installer->getInstallPath($loader->load($package));
+        $result = $installer->getComponentPath($loader->load($package));
         $this->assertEquals($this->componentDir . '/' . $expected, $result);
     }
 
     /**
-     * Data provider for testComponentGetInstallPath().
+     * Data provider for testGetComponentPath().
      *
-     * @see testGetInstallPath()
+     * @see testGetComponentPath()
      */
-    public function providerComponentGetInstallPath()
+    public function providerGetComponentPath()
     {
         $package = array(
             'name' => 'foo/bar',
