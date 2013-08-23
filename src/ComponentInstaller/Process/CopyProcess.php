@@ -36,15 +36,11 @@ class CopyProcess extends Process
      */
     public function copy($packages)
     {
+        // Iterate over each package that should be processed.
         foreach ($packages as $package) {
-            // Skip processing the package if it's a "component", because then
-            // it is already available in the component directory. Root packages
-            // are still to be processed, whether or not they're "components".
+            // Retrieve some basic information about the package.
             $type = isset($package['type']) ? $package['type'] : 'library';
             $root = isset($package['is-root']) ? $package['is-root'] : false;
-            if ($type == 'component' && !$root) {
-                continue;
-            }
 
             // Retrieve some information about the package.
             $packageDir = $this->getVendorDir($package);
