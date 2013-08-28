@@ -62,14 +62,24 @@ class Process implements ProcessInterface
         }
 
         // Get the available packages.
+        $allPackages = array();
         $locker = $this->composer->getLocker();
         if (isset($locker)) {
             $lockData = $locker->getLockData();
-            $this->packages = isset($lockData['packages']) ? $lockData['packages'] : array();
+            $allPackages = isset($lockData['packages']) ? $lockData['packages'] : array();
 
             // Also merge in any of the development packages.
             $dev = isset($lockData['packages-dev']) ? $lockData['packages-dev'] : array();
             foreach ($dev as $package) {
+                $allPackages[] = $package;
+            }
+        }
+
+        // Only add those packages that we can reasonably 
+        // assume are components into our packages list
+        foreach ($allPackages as $package) {
+            $extra = isset($package['extra']) ? $package['extra'] : array();
+            if (isset($extra['component']) && is_array($extra['component'])) {
                 $this->packages[] = $package;
             }
         }
