@@ -15,6 +15,7 @@ use Composer\Composer;
 use Composer\Installer\LibraryInstaller;
 use Composer\Script\Event;
 use Composer\Package\PackageInterface;
+use Composer\Package\AliasPackage;
 use Composer\Util\Filesystem;
 
 /**
@@ -41,6 +42,11 @@ class Installer extends LibraryInstaller
         // the root package's scripts if available.
         $rootPackage = isset($this->composer) ? $this->composer->getPackage() : null;
         if (isset($rootPackage)) {
+            // Ensure we get the root package rather than its alias.
+            while ($package instanceof AliasPackage) {
+                $package = $package->getAliasOf();
+            }
+
             // Make sure the root package can override the available scripts.
             if (method_exists($rootPackage, 'setScripts')) {
                 $scripts = $rootPackage->getScripts();
