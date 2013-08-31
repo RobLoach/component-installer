@@ -43,8 +43,8 @@ class Installer extends LibraryInstaller
         $rootPackage = isset($this->composer) ? $this->composer->getPackage() : null;
         if (isset($rootPackage)) {
             // Ensure we get the root package rather than its alias.
-            while ($package instanceof AliasPackage) {
-                $package = $package->getAliasOf();
+            while ($rootPackage instanceof AliasPackage) {
+                $rootPackage = $rootPackage->getAliasOf();
             }
 
             // Make sure the root package can override the available scripts.
