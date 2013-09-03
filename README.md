@@ -226,7 +226,7 @@ define use of [html5shiv](https://github.com/aFarkas/html5shiv):
                         "scripts": [
                             "dist/html5shiv.js"
                         ]
-                    },
+                    }
                 },
                 "require": {
                     "robloach/component-installer": "*"
