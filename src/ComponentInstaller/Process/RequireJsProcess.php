@@ -68,7 +68,7 @@ class RequireJsProcess extends Process
         }
 
         // Append the config to the require.js and write it.
-        if (file_put_contents($this->componentDir . '/require.js', $requirejs . $requireConfig) === FALSE) {
+        if (file_put_contents($this->componentDir . '/require.js', $requireConfig . $requirejs) === FALSE) {
             $this->io->write('<error>Error writing require.js to the components directory</error>');
 
             return false;
