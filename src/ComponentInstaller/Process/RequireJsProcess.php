@@ -204,7 +204,7 @@ EOT;
     }
 
     /**
-     * Merges two arrays without switching individual values to arrays.
+     * Merges two arrays without changing string array keys. Appends to array if keys are numeric.
      *
      * @see array_merge()
      * @see array_merge_recursive()
@@ -214,11 +214,15 @@ EOT;
         $merged = $array1;
 
         foreach ($array2 as $key => &$value) {
-            if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
-                $merged[$key] = $this->arrayMergeRecursiveDistinct($merged[$key], $value);
-            }
-            else {
-                $merged[$key] = $value;
+            if(is_numeric($key)){
+                $merged[] = $value;
+            } else {
+                if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
+                    $merged[$key] = $this->arrayMergeRecursiveDistinct($merged[$key], $value);
+                }
+                else {
+                    $merged[$key] = $value;
+                }
             }
         }
 
