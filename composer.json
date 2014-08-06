@@ -1,7 +1,7 @@
 {
     "name": "robloach/component-installer",
     "description": "Allows installation of Components via Composer.",
-    "type": "composer-installer",
+    "type": "composer-plugin",
     "license": "MIT",
     "authors": [
         {
