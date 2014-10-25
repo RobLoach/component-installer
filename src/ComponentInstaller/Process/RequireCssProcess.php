@@ -43,6 +43,11 @@ class RequireCssProcess extends Process
                     $sourceRoot = dirname($path);
                     // The style path to the CSS file when external.
                     $sourcePath = $package . '/' . $style;
+                    //Replace glob patterns with filenames.
+                    $filename = basename($style);
+                    if(preg_match('~^\*(\.[^\.]+)$~', $filename, $matches)){
+                        $sourcePath = str_replace($filename, basename($assetPath), $sourcePath);
+                    }
                     // Where the final CSS will be generated.
                     $targetPath = $this->componentDir;
                     // Build the asset and add it to the collection.
