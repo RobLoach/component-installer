@@ -153,6 +153,8 @@ class Installer extends LibraryInstaller
             "ComponentInstaller\\Process\\RequireCssProcess",
             // Compile the require-built.js file.
             "ComponentInstaller\\Process\\BuildJsProcess",
+			// Build the component includer.
+            "ComponentInstaller\\Process\\BuildIncluderProcess",
         );
 
         // Initialize and execute each process in sequence.
