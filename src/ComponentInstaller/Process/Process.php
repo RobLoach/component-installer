@@ -75,12 +75,21 @@ class Process implements ProcessInterface
             }
         }
 
-        // Only add those packages that we can reasonably 
+        // Only add those packages that we can reasonably
         // assume are components into our packages list
+        $baseExtras = $this->composer->getPackage()->getExtra();
+        $customComponent = isset($baseExtras['component']) ? $baseExtras['component'] : array();
         foreach ($allPackages as $package) {
-            $extra = isset($package['extra']) ? $package['extra'] : array();
-            if (isset($extra['component']) && is_array($extra['component'])) {
+            $name = $package['name'];
+            if (isset($customComponent[$name]) && is_array($customComponent[$name])) {
+                $package['extra'] = array('component' => $customComponent[$name]);
                 $this->packages[] = $package;
+            }
+            else {
+                $extra = isset($package['extra']) ? $package['extra'] : array();
+                if (isset($extra['component']) && is_array($extra['component'])) {
+                    $this->packages[] = $package;
+                }
             }
         }
 
