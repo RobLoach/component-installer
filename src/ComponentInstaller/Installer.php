@@ -160,7 +160,7 @@ class Installer extends LibraryInstaller
             $process = new $class($composer, $io);
             // When an error occurs during initialization, end the process.
             if (!$process->init()) {
-                $io->write('<error>An error occurred while initializing the process.</info>');
+                $io->write('<error>An error occurred while initializing the process.</error>');
                 break;
             }
             $process->process();
