@@ -237,6 +237,38 @@ define use of [html5shiv](https://github.com/aFarkas/html5shiv):
 }
 ```
 
+### Packages Without Component Support In *composer.json*
+
+Using [`extra`](https://getcomposer.org/doc/04-schema.md#extra)
+in *composer.json* allows use of Component Installer in packages that don't
+explicitly provide support for component, but does ship with their own *composer.json*. 
+Using `extra` with packages that ships with Component Installer, will override component's settings for that package.
+
+``` json
+{
+    "require": {
+        "datatables/datatables": "~1.10"
+    },
+    "extra": {
+        "component": {
+            "datatables/datatables": {
+                "scripts": [
+                    "media/js/jquery.dataTables.js"
+                ],
+                "styles": [
+                    "media/css/jquery.dataTables.css"
+                ],
+                "files": [
+                    "media/js/jquery.dataTables.min.js",
+                    "media/css/jquery.dataTables.min.css",
+                    "media/images/*.png"
+                ]
+            }
+        }
+    }
+}
+```
+
 ### Backwards Compatibility
 
 Newer versions of composer made backwards incompatible changes to the way

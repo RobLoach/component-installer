@@ -58,7 +58,7 @@ class Installer extends LibraryInstaller
         }
 
         // Explicitly state support of "component" packages.
-        return $packageType === 'component';
+        return true;
     }
 
     /**
@@ -75,9 +75,20 @@ class Installer extends LibraryInstaller
             list($vendor, $name) = explode('/', $prettyName);
         }
 
+        // First look for an override in root package's extra, then try the package's extra
+        $rootPackage = $this->composer->getPackage();
+        $rootExtras = $rootPackage ? $rootPackage->getExtra() : array();
+        $customComponents = isset($rootExtras['component']) ? $rootExtras['component'] : array();
+
+        if (isset($customComponents[$prettyName]) && is_array($customComponents[$prettyName])) {
+            $component = $customComponents[$prettyName];
+        }
+        else {
+            $extra = $package->getExtra();
+            $component = isset($extra['component']) ? $extra['component'] : array();
+        }
+
         // Allow the component to define its own name.
-        $extra = $package->getExtra();
-        $component = isset($extra['component']) ? $extra['component'] : array();
         if (isset($component['name'])) {
             $name = $component['name'];
         }
