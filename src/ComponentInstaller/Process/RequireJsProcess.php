@@ -68,7 +68,7 @@ class RequireJsProcess extends Process
         }
 
         // Append the config to the require.js and write it.
-        if (file_put_contents($this->componentDir . '/require.js', $requirejs . $requireConfig) === FALSE) {
+        if (file_put_contents($this->componentDir . '/require.js', $requireConfig . $requirejs) === FALSE) {
             $this->io->write('<error>Error writing require.js to the components directory</error>');
 
             return false;
@@ -204,7 +204,7 @@ EOT;
     }
 
     /**
-     * Merges two arrays without switching individual values to arrays.
+     * Merges two arrays without changing string array keys. Appends to array if keys are numeric.
      *
      * @see array_merge()
      * @see array_merge_recursive()
@@ -214,11 +214,15 @@ EOT;
         $merged = $array1;
 
         foreach ($array2 as $key => &$value) {
-            if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
-                $merged[$key] = $this->arrayMergeRecursiveDistinct($merged[$key], $value);
-            }
-            else {
-                $merged[$key] = $value;
+            if(is_numeric($key)){
+                $merged[] = $value;
+            } else {
+                if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
+                    $merged[$key] = $this->arrayMergeRecursiveDistinct($merged[$key], $value);
+                }
+                else {
+                    $merged[$key] = $value;
+                }
             }
         }
 
