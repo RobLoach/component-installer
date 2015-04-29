@@ -43,8 +43,8 @@ class RequireCssProcess extends Process
         $assets = new AssetCollection();
         $styles = $this->packageStyles($this->packages);
         foreach ($styles as $package => $packageStyles) {
-			$packageAssets = new AssetCollection();
-			$packagePath = $this->componentDir.'/'.$package;
+            $packageAssets = new AssetCollection();
+            $packagePath = $this->componentDir.'/'.$package;
 
             foreach ($packageStyles as $style => $paths) {
                 foreach ($paths as $path) {
@@ -65,17 +65,17 @@ class RequireCssProcess extends Process
                     $asset = new FileAsset($assetPath, $filterCollection, $sourceRoot, $sourcePath);
                     $asset->setTargetPath($targetPath);
                     $assets->add($asset);
-					// Add asset to package collection.
-					$sourcePath = preg_replace('{^.*'.preg_quote($package).'/}', '', $sourcePath);
-					$asset = new FileAsset($assetPath, $filterCollection, $sourceRoot, $sourcePath);
-					$asset->setTargetPath($packagePath);
-					$packageAssets->add($asset);
+                    // Add asset to package collection.
+                    $sourcePath = preg_replace('{^.*'.preg_quote($package).'/}', '', $sourcePath);
+                    $asset = new FileAsset($assetPath, $filterCollection, $sourceRoot, $sourcePath);
+                    $asset->setTargetPath($packagePath);
+                    $packageAssets->add($asset);
                 }
             }
 
-			if (file_put_contents($packagePath.'/'.$package.'-built.css', $packageAssets->dump()) === FALSE) {
-				$this->io->write("<error>Error writing $package-built.css to destination</error>");
-			}
+            if (file_put_contents($packagePath.'/'.$package.'-built.css', $packageAssets->dump()) === FALSE) {
+                $this->io->write("<error>Error writing $package-built.css to destination</error>");
+            }
         }
 
         if (file_put_contents($this->componentDir . '/require.css', $assets->dump()) === FALSE) {
@@ -83,7 +83,7 @@ class RequireCssProcess extends Process
             return false;
         }
 
-		return null;
+        return null;
     }
 
     /**

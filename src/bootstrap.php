@@ -12,11 +12,11 @@
 function includeIfExists($file)
 {
     if (file_exists($file)) {
-		/** @noinspection PhpIncludeInspection */
-		return include $file;
+        /** @noinspection PhpIncludeInspection */
+        return include $file;
     }
 
-	return null;
+    return null;
 }
 
 if ((!$loader = includeIfExists(__DIR__ . '/../vendor/autoload.php')) && (!$loader = includeIfExists(__DIR__ . '/../../../autoload.php'))) {

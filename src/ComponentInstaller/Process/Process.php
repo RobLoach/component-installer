@@ -25,38 +25,38 @@ use Composer\Package\Loader\ArrayLoader;
  */
 class Process implements ProcessInterface
 {
-	/**
-	 * @var Composer
-	 */
+    /**
+     * @var Composer
+     */
     protected $composer;
 
-	/**
-	 * @var IOInterface|NullIO
-	 */
+    /**
+     * @var IOInterface|NullIO
+     */
     protected $io;
 
-	/**
-	 * @var \Composer\Config
-	 */
+    /**
+     * @var \Composer\Config
+     */
     protected $config;
 
-	/**
-	 * @var array
-	 */
+    /**
+     * @var array
+     */
     protected $packages = array();
 
-	/**
-	 * @var string
-	 */
+    /**
+     * @var string
+     */
     protected $componentDir = 'components';
 
-	/**
-	 * @var Filesystem
-	 */
+    /**
+     * @var Filesystem
+     */
     protected $fs;
 
     /**
-	 * The Composer installation manager to find Component vendor directories.
+     * The Composer installation manager to find Component vendor directories.
      * @var \Composer\Installer\InstallationManager
      */
     protected $installationManager;
@@ -87,7 +87,7 @@ class Process implements ProcessInterface
 
         // Get the available packages.
         $allPackages = array();
-		/** @var \Composer\Package\Locker $locker */
+        /** @var \Composer\Package\Locker $locker */
         $locker = $this->composer->getLocker();
         if (isset($locker)) {
             $lockData = $locker->getLockData();
@@ -102,7 +102,7 @@ class Process implements ProcessInterface
 
         // Only add those packages that we can reasonably
         // assume are components into our packages list
-		/** @var \Composer\Package\RootPackageInterface $rootPackage */
+        /** @var \Composer\Package\RootPackageInterface $rootPackage */
         $rootPackage = $this->composer->getPackage();
         $rootExtras = $rootPackage ? $rootPackage->getExtra() : array();
         $customComponents = isset($rootExtras['component']) ? $rootExtras['component'] : array();
@@ -156,7 +156,7 @@ class Process implements ProcessInterface
         // Parse the pretty name for the vendor and name.
         if (strpos($prettyName, '/') !== false) {
             list($vendor, $name) = explode('/', $prettyName);
-			unset($vendor);
+            unset($vendor);
         } else {
             // Vendor wasn't found, so default to the pretty name instead.
             $name = $prettyName;
@@ -181,8 +181,8 @@ class Process implements ProcessInterface
 
     /**
      * Sets the component directory.
-	 * @param string $dir
-	 * @return string
+     * @param string $dir
+     * @return string
      */
     public function setComponentDir($dir)
     {
@@ -194,21 +194,21 @@ class Process implements ProcessInterface
      *
      * @param array $package
      *   The package to retrieve the vendor directory for.
-	 * @return string
+     * @return string
      */
     public function getVendorDir(array $package)
     {
         // The root package vendor directory is not handled by getInstallPath().
         if (isset($package['is-root']) && $package['is-root'] === true) {
-			$path = getcwd();
+            $path = getcwd();
 
-			if (!file_exists($path.DIRECTORY_SEPARATOR.'composer.json')) {
-				for ($temp = __DIR__; strlen($temp) > 3; $temp = dirname($temp)) {
-					if (file_exists($temp.DIRECTORY_SEPARATOR.'composer.json')) {
-						$path = $temp;
-					}
-				}
-			}
+            if (!file_exists($path.DIRECTORY_SEPARATOR.'composer.json')) {
+                for ($temp = __DIR__; strlen($temp) > 3; $temp = dirname($temp)) {
+                    if (file_exists($temp.DIRECTORY_SEPARATOR.'composer.json')) {
+                        $path = $temp;
+                    }
+                }
+            }
 
             return $path;
         }

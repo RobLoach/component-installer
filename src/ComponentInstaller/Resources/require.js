@@ -1,5 +1,5 @@
 /** vim: et:ts=4:sw=4:sts=4
- * @license RequireJS 2.1.8 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
+ * @license RequireJS 2.1.5 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
  * see: http://github.com/jrburke/requirejs for details
  */
@@ -12,7 +12,7 @@ var requirejs, require, define;
 (function (global) {
     var req, s, head, baseElement, dataMain, src,
         interactiveScript, currentlyAddingScript, mainScript, subPath,
-        version = '2.1.8',
+        version = '2.1.5',
         commentRegExp = /(\/\*([\s\S]*?)\*\/|([^:]|^)\/\/(.*)$)/mg,
         cjsRequireRegExp = /[^.]\s*require\s*\(\s*["']([^'"\s]+)["']\s*\)/g,
         jsSuffixRegExp = /\.js$/,
@@ -22,7 +22,7 @@ var requirejs, require, define;
         hasOwn = op.hasOwnProperty,
         ap = Array.prototype,
         apsp = ap.splice,
-        isBrowser = !!(typeof window !== 'undefined' && navigator && window.document),
+        isBrowser = !!(typeof window !== 'undefined' && navigator && document),
         isWebWorker = !isBrowser && typeof importScripts !== 'undefined',
         //PS3 indicates loaded and complete, but need to wait for complete
         //specifically. Sequence is 'loading', 'loaded', execution,
@@ -132,10 +132,6 @@ var requirejs, require, define;
 
     function scripts() {
         return document.getElementsByTagName('script');
-    }
-
-    function defaultOnError(err) {
-        throw err;
     }
 
     //Allow getting a global that expressed in
@@ -504,12 +500,7 @@ var requirejs, require, define;
                     fn(defined[id]);
                 }
             } else {
-                mod = getModule(depMap);
-                if (mod.error && name === 'error') {
-                    fn(mod.error);
-                } else {
-                    mod.on(name, fn);
-                }
+                getModule(depMap).on(name, fn);
             }
         }
 
@@ -580,13 +571,7 @@ var requirejs, require, define;
                         id: mod.map.id,
                         uri: mod.map.url,
                         config: function () {
-                            var c,
-                                pkg = getOwn(config.pkgs, mod.map.id);
-                            // For packages, only support config targeted
-                            // at the main module.
-                            c = pkg ? getOwn(config.config, mod.map.id + '/' + pkg.main) :
-                                      getOwn(config.config, mod.map.id);
-                            return  c || {};
+                            return (config.config && getOwn(config.config, mod.map.id)) || {};
                         },
                         exports: defined[mod.map.id]
                     });
@@ -855,13 +840,8 @@ var requirejs, require, define;
                     if (this.depCount < 1 && !this.defined) {
                         if (isFunction(factory)) {
                             //If there is an error listener, favor passing
-                            //to that instead of throwing an error. However,
-                            //only do it for define()'d  modules. require
-                            //errbacks should not be called for failures in
-                            //their callbacks (#699). However if a global
-                            //onError is set, use that.
-                            if ((this.events.error && this.map.isDefine) ||
-                                req.onError !== defaultOnError) {
+                            //to that instead of throwing an error.
+                            if (this.events.error) {
                                 try {
                                     exports = context.execCb(id, factory, depExports, exports);
                                 } catch (e) {
@@ -889,8 +869,8 @@ var requirejs, require, define;
 
                             if (err) {
                                 err.requireMap = this.map;
-                                err.requireModules = this.map.isDefine ? [this.map.id] : null;
-                                err.requireType = this.map.isDefine ? 'define' : 'require';
+                                err.requireModules = [this.map.id];
+                                err.requireType = 'define';
                                 return onError((this.error = err));
                             }
 
@@ -1113,7 +1093,7 @@ var requirejs, require, define;
                         }));
 
                         if (this.errback) {
-                            on(depMap, 'error', bind(this, this.errback));
+                            on(depMap, 'error', this.errback);
                         }
                     }
 
@@ -1625,7 +1605,7 @@ var requirejs, require, define;
             },
 
             /**
-             * Executes a module callback function. Broken out as a separate function
+             * Executes a module callack function. Broken out as a separate function
              * solely to allow the build system to sequence the files in the built
              * layer in the right sequence.
              *
@@ -1663,7 +1643,7 @@ var requirejs, require, define;
             onScriptError: function (evt) {
                 var data = getScriptData(evt);
                 if (!hasPathFallback(data.id)) {
-                    return onError(makeError('scripterror', 'Script error for: ' + data.id, evt, [data.id]));
+                    return onError(makeError('scripterror', 'Script error', evt, [data.id]));
                 }
             }
         };
@@ -1792,19 +1772,8 @@ var requirejs, require, define;
      * function. Intercept/override it if you want custom error handling.
      * @param {Error} err the error object.
      */
-    req.onError = defaultOnError;
-
-    /**
-     * Creates the node for the load command. Only used in browser envs.
-     */
-    req.createNode = function (config, moduleName, url) {
-        var node = config.xhtml ?
-                document.createElementNS('http://www.w3.org/1999/xhtml', 'html:script') :
-                document.createElement('script');
-        node.type = config.scriptType || 'text/javascript';
-        node.charset = 'utf-8';
-        node.async = true;
-        return node;
+    req.onError = function (err) {
+        throw err;
     };
 
     /**
@@ -1821,7 +1790,12 @@ var requirejs, require, define;
             node;
         if (isBrowser) {
             //In the browser so use a script tag
-            node = req.createNode(config, moduleName, url);
+            node = config.xhtml ?
+                    document.createElementNS('http://www.w3.org/1999/xhtml', 'html:script') :
+                    document.createElement('script');
+            node.type = config.scriptType || 'text/javascript';
+            node.charset = 'utf-8';
+            node.async = true;
 
             node.setAttribute('data-requirecontext', context.contextName);
             node.setAttribute('data-requiremodule', moduleName);
@@ -1932,31 +1906,24 @@ var requirejs, require, define;
             //baseUrl, if it is not already set.
             dataMain = script.getAttribute('data-main');
             if (dataMain) {
-                //Preserve dataMain in case it is a path (i.e. contains '?')
-                mainScript = dataMain;
-
                 //Set final baseUrl if there is not already an explicit one.
                 if (!cfg.baseUrl) {
                     //Pull off the directory of data-main for use as the
                     //baseUrl.
-                    src = mainScript.split('/');
+                    src = dataMain.split('/');
                     mainScript = src.pop();
                     subPath = src.length ? src.join('/')  + '/' : './';
 
                     cfg.baseUrl = subPath;
+                    dataMain = mainScript;
                 }
 
-                //Strip off any trailing .js since mainScript is now
+                //Strip off any trailing .js since dataMain is now
                 //like a module name.
-                mainScript = mainScript.replace(jsSuffixRegExp, '');
-
-                 //If mainScript is still a path, fall back to dataMain
-                if (req.jsExtRegExp.test(mainScript)) {
-                    mainScript = dataMain;
-                }
+                dataMain = dataMain.replace(jsSuffixRegExp, '');
 
                 //Put the data-main script in the files to load.
-                cfg.deps = cfg.deps ? cfg.deps.concat(mainScript) : [mainScript];
+                cfg.deps = cfg.deps ? cfg.deps.concat(dataMain) : [dataMain];
 
                 return true;
             }
@@ -1984,13 +1951,12 @@ var requirejs, require, define;
         //This module may not have dependencies
         if (!isArray(deps)) {
             callback = deps;
-            deps = null;
+            deps = [];
         }
 
         //If no name, and callback is a function, then figure out if it a
         //CommonJS thing with dependencies.
-        if (!deps && isFunction(callback)) {
-            deps = [];
+        if (!deps.length && isFunction(callback)) {
             //Remove comments from the callback string,
             //look for require calls, and pull them into the dependencies,
             //but only if there are function args.

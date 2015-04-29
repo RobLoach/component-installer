@@ -59,15 +59,15 @@ class RequireJsProcess extends Process
         }
 
         // Read in require.js to prepare the final require.js.
-		if (!file_exists(dirname(__DIR__) . '/Resources/require.js')) {
-			$this->io->write('<error>Error reading in require.js</error>');
+        if (!file_exists(dirname(__DIR__) . '/Resources/require.js')) {
+            $this->io->write('<error>Error reading in require.js</error>');
 
-			return false;
-		}
+            return false;
+        }
 
-		$assets = $this->newAssetCollection();
-		$assets->add(new FileAsset(dirname(__DIR__) . '/Resources/require.js'));
-		$assets->add(new StringAsset($requireConfig));
+        $assets = $this->newAssetCollection();
+        $assets->add(new FileAsset(dirname(__DIR__) . '/Resources/require.js'));
+        $assets->add(new StringAsset($requireConfig));
 
         // Append the config to the require.js and write it.
         if (file_put_contents($this->componentDir . '/require.js', $assets->dump()) === FALSE) {
@@ -76,7 +76,7 @@ class RequireJsProcess extends Process
             return false;
         }
 
-		return null;
+        return null;
     }
 
     /**
@@ -149,15 +149,15 @@ class RequireJsProcess extends Process
 
     /**
      * Concatenate all scripts together into one destination file.
-	 *
-	 * @param array $package
-	 * @param array $scripts
-	 * @param string $file
-	 * @return bool
+     *
+     * @param array $package
+     * @param array $scripts
+     * @param string $file
+     * @return bool
      */
     public function aggregateScripts($package, array $scripts, $file)
     {
-		$assets = $this->newAssetCollection();
+        $assets = $this->newAssetCollection();
 
         foreach ($scripts as $script) {
             // Collect each candidate from a glob file search.
@@ -215,10 +215,10 @@ EOT;
      *
      * @see array_merge()
      * @see array_merge_recursive()
-	 *
-	 * @param array $array1
-	 * @param array $array2
-	 * @return array
+     *
+     * @param array $array1
+     * @param array $array2
+     * @return array
      */
     protected function arrayMergeRecursiveDistinct(array &$array1, array &$array2)
     {
@@ -240,25 +240,25 @@ EOT;
         return $merged;
     }
 
-	/**
-	 * @return AssetCollection
-	 */
-	protected function newAssetCollection()
-	{
-		// Aggregate all the assets into one file.
-		$assets = new AssetCollection();
-		if ($this->config->has('component-scriptFilters')) {
-			$filters = $this->config->get('component-scriptFilters');
-			if (isset($filters) && is_array($filters)) {
-				foreach ($filters as $filter => $filterParams) {
-					$reflection = new \ReflectionClass($filter);
-					/** @var \Assetic\Filter\FilterInterface $filter */
-					$filter = $reflection->newInstanceArgs($filterParams);
-					$assets->ensureFilter($filter);
-				}
-			}
-		}
+    /**
+     * @return AssetCollection
+     */
+    protected function newAssetCollection()
+    {
+        // Aggregate all the assets into one file.
+        $assets = new AssetCollection();
+        if ($this->config->has('component-scriptFilters')) {
+            $filters = $this->config->get('component-scriptFilters');
+            if (isset($filters) && is_array($filters)) {
+                foreach ($filters as $filter => $filterParams) {
+                    $reflection = new \ReflectionClass($filter);
+                    /** @var \Assetic\Filter\FilterInterface $filter */
+                    $filter = $reflection->newInstanceArgs($filterParams);
+                    $assets->ensureFilter($filter);
+                }
+            }
+        }
 
-		return $assets;
-	}
+        return $assets;
+    }
 }

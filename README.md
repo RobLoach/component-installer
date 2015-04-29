@@ -123,7 +123,7 @@ Creating a Component
 
 To set up a Component to be installed with Component Installer, have it
 `require` the package *robloach/component-installer* and set the `type` to
-*component*, but it does not necessarily:
+*component*, but it is not necessary:
 
 ``` json
 {
@@ -261,8 +261,8 @@ define use of [html5shiv](https://github.com/aFarkas/html5shiv):
 
 Using [`extra`](https://getcomposer.org/doc/04-schema.md#extra)
 in *composer.json* allows use of Component Installer in packages that don't
-explicitly provide support for component, but does ship with their own *composer.json*. 
-Using `extra` with packages that ships with Component Installer, will override component's settings for that package.
+explicitly provide support for component, but do ship with their own *composer.json*. 
+Using `extra` with packages that ship with Component Installer, will override component's settings for that package.
 
 ``` json
 {

@@ -62,7 +62,7 @@ class Installer extends LibraryInstaller
     /**
      * Gets the destination Component directory.
      *
-	 * @param PackageInterface $package
+     * @param PackageInterface $package
      * @return string
      *   The path to where the final Component should be installed.
      */
@@ -72,7 +72,7 @@ class Installer extends LibraryInstaller
         $name = $prettyName = $package->getPrettyName();
         if (strpos($prettyName, '/') !== false) {
             list($vendor, $name) = explode('/', $prettyName);
-			unset($vendor);
+            unset($vendor);
         }
 
         // First look for an override in root package's extra, then try the package's extra
@@ -118,8 +118,8 @@ class Installer extends LibraryInstaller
 
     /**
      * Remove both the installed code and files from the Component directory.
-	 *
-	 * @param PackageInterface $package
+     *
+     * @param PackageInterface $package
      */
     public function removeCode(PackageInterface $package)
     {
@@ -129,9 +129,9 @@ class Installer extends LibraryInstaller
 
     /**
      * Remove a Component's files from the Component directory.
-	 *
-	 * @param PackageInterface $package
-	 * @return bool
+     *
+     * @param PackageInterface $package
+     * @return bool
      */
     public function removeComponent(PackageInterface $package)
     {
@@ -141,8 +141,8 @@ class Installer extends LibraryInstaller
 
     /**
      * Before installing the Component, be sure its destination is clear first.
-	 *
-	 * @param PackageInterface $package
+     *
+     * @param PackageInterface $package
      */
     public function installCode(PackageInterface $package)
     {
@@ -152,8 +152,8 @@ class Installer extends LibraryInstaller
 
     /**
      * Script callback; Acted on after the autoloader is dumped.
-	 *
-	 * @param Event $event
+     *
+     * @param Event $event
      */
     public static function postAutoloadDump(Event $event)
     {
@@ -177,7 +177,7 @@ class Installer extends LibraryInstaller
 
         // Initialize and execute each process in sequence.
         foreach ($processes as $class) {
-			/** @var \ComponentInstaller\Process\Process $process */
+            /** @var \ComponentInstaller\Process\Process $process */
             $process = new $class($composer, $io);
             // When an error occurs during initialization, end the process.
             if (!$process->init()) {

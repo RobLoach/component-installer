@@ -29,7 +29,7 @@ class CopyProcess extends Process
      *
      * @param array $packages
      *   An array of packages.
-	 * @return bool
+     * @return bool
      */
     public function copy($packages)
     {

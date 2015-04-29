@@ -29,7 +29,7 @@ class BuildJsProcess extends Process
      *
      * @param array $packages
      *   An array of packages.
-	 * @return bool
+     * @return bool
      */
     public function compile($packages)
     {
@@ -66,7 +66,7 @@ class BuildJsProcess extends Process
     /**
      * Provide the initial definition prefix.
      *
-	 * @param string $componentName
+     * @param string $componentName
      * @return string Begin the module definition.
      */
     protected function definePrefix($componentName)
