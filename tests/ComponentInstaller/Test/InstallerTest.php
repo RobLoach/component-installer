@@ -11,11 +11,10 @@
 
 namespace Composer\Test;
 
+use ComponentInstaller\Util\Filesystem;
 use Composer\Test\Installer\LibraryInstallerTest;
 use ComponentInstaller\Installer;
 use Composer\Package\Loader\ArrayLoader;
-use Composer\Package\Package;
-use Composer\Composer;
 use Composer\Config;
 
 /**
@@ -24,6 +23,16 @@ use Composer\Config;
 class InstallerTest extends LibraryInstallerTest
 {
     protected $componentDir = 'components';
+
+	/**
+	 * @var \Composer\Config
+	 */
+	protected $config;
+
+	/**
+	 * @var Filesystem
+	 */
+	protected $fs;
 
     /**
      * {@inheritdoc}
@@ -52,7 +61,7 @@ class InstallerTest extends LibraryInstallerTest
     {
         $this->fs->removeDirectory($this->componentDir);
 
-        return parent::tearDown();
+        parent::tearDown();
     }
 
     /**
@@ -92,8 +101,7 @@ class InstallerTest extends LibraryInstallerTest
     {
         // All package types support having Components.
         $tests[] = array('component', true);
-        $tests[] = array('not-a-component', false);
-        $tests[] = array('library', false);
+        $tests[] = array('all-supported', true);
 
         return $tests;
     }
@@ -117,7 +125,7 @@ class InstallerTest extends LibraryInstallerTest
 
         // Test the results.
         $result = $installer->getComponentPath($loader->load($package));
-        $this->assertEquals($this->componentDir . '/' . $expected, $result);
+        $this->assertEquals($this->componentDir . DIRECTORY_SEPARATOR . $expected, $result);
     }
 
     /**

@@ -11,12 +11,10 @@
 
 namespace ComponentInstaller;
 
-use Composer\Composer;
 use Composer\Installer\LibraryInstaller;
 use Composer\Script\Event;
 use Composer\Package\PackageInterface;
 use Composer\Package\AliasPackage;
-use Composer\Util\Filesystem;
 
 /**
  * Component Installer for Composer.
@@ -58,12 +56,13 @@ class Installer extends LibraryInstaller
         }
 
         // Explicitly state support of "component" packages.
-        return $packageType === 'component';
+        return true;
     }
 
     /**
      * Gets the destination Component directory.
      *
+	 * @param PackageInterface $package
      * @return string
      *   The path to where the final Component should be installed.
      */
@@ -73,11 +72,23 @@ class Installer extends LibraryInstaller
         $name = $prettyName = $package->getPrettyName();
         if (strpos($prettyName, '/') !== false) {
             list($vendor, $name) = explode('/', $prettyName);
+			unset($vendor);
+        }
+
+        // First look for an override in root package's extra, then try the package's extra
+        $rootPackage = $this->composer->getPackage();
+        $rootExtras = $rootPackage ? $rootPackage->getExtra() : array();
+        $customComponents = isset($rootExtras['component']) ? $rootExtras['component'] : array();
+
+        if (isset($customComponents[$prettyName]) && is_array($customComponents[$prettyName])) {
+            $component = $customComponents[$prettyName];
+        }
+        else {
+            $extra = $package->getExtra();
+            $component = isset($extra['component']) ? $extra['component'] : array();
         }
 
         // Allow the component to define its own name.
-        $extra = $package->getExtra();
-        $component = isset($extra['component']) ? $extra['component'] : array();
         if (isset($component['name'])) {
             $name = $component['name'];
         }
@@ -93,7 +104,7 @@ class Installer extends LibraryInstaller
     {
         $this->componentDir = $this->getComponentDir();
         $this->filesystem->ensureDirectoryExists($this->componentDir);
-        return parent::initializeVendorDir();
+        parent::initializeVendorDir();
     }
 
     /**
@@ -107,15 +118,20 @@ class Installer extends LibraryInstaller
 
     /**
      * Remove both the installed code and files from the Component directory.
+	 *
+	 * @param PackageInterface $package
      */
     public function removeCode(PackageInterface $package)
     {
         $this->removeComponent($package);
-        return parent::removeCode($package);
+        parent::removeCode($package);
     }
 
     /**
      * Remove a Component's files from the Component directory.
+	 *
+	 * @param PackageInterface $package
+	 * @return bool
      */
     public function removeComponent(PackageInterface $package)
     {
@@ -125,15 +141,19 @@ class Installer extends LibraryInstaller
 
     /**
      * Before installing the Component, be sure its destination is clear first.
+	 *
+	 * @param PackageInterface $package
      */
     public function installCode(PackageInterface $package)
     {
         $this->removeComponent($package);
-        return parent::installCode($package);
+        parent::installCode($package);
     }
 
     /**
      * Script callback; Acted on after the autoloader is dumped.
+	 *
+	 * @param Event $event
      */
     public static function postAutoloadDump(Event $event)
     {
@@ -157,6 +177,7 @@ class Installer extends LibraryInstaller
 
         // Initialize and execute each process in sequence.
         foreach ($processes as $class) {
+			/** @var \ComponentInstaller\Process\Process $process */
             $process = new $class($composer, $io);
             // When an error occurs during initialization, end the process.
             if (!$process->init()) {
