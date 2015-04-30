@@ -23,7 +23,8 @@
         "composer-plugin-api": "1.0.0"
     },
     "require-dev": {
-        "composer/composer": "1.*"
+        "composer/composer": "1.*",
+        "phpunit/phpunit": "4.*"
     },
     "minimum-stability": "alpha",
     "archive": {

@@ -11,9 +11,8 @@
 
 namespace ComponentInstaller\Process;
 
-use Composer\Composer;
+use Assetic\Asset\StringAsset;
 use Composer\Config;
-use Composer\Package\Package;
 use Composer\Json\JsonFile;
 use Assetic\Asset\AssetCollection;
 use Assetic\Asset\FileAsset;
@@ -60,19 +59,24 @@ class RequireJsProcess extends Process
         }
 
         // Read in require.js to prepare the final require.js.
-        $requirejs = file_get_contents(dirname(__DIR__) . '/Resources/require.js');
-        if ($requirejs === FALSE) {
+        if (!file_exists(dirname(__DIR__) . '/Resources/require.js')) {
             $this->io->write('<error>Error reading in require.js</error>');
 
             return false;
         }
 
+        $assets = $this->newAssetCollection();
+        $assets->add(new FileAsset(dirname(__DIR__) . '/Resources/require.js'));
+        $assets->add(new StringAsset($requireConfig));
+
         // Append the config to the require.js and write it.
-        if (file_put_contents($this->componentDir . '/require.js', $requirejs . $requireConfig) === FALSE) {
+        if (file_put_contents($this->componentDir . '/require.js', $assets->dump()) === FALSE) {
             $this->io->write('<error>Error writing require.js to the components directory</error>');
 
             return false;
         }
+
+        return null;
     }
 
     /**
@@ -80,8 +84,6 @@ class RequireJsProcess extends Process
      *
      * @param $packages
      *   An array of packages from the composer.lock file.
-     * @param $config
-     *   The Composer Config object.
      *
      * @return array
      *   The built JSON array.
@@ -147,11 +149,16 @@ class RequireJsProcess extends Process
 
     /**
      * Concatenate all scripts together into one destination file.
+     *
+     * @param array $package
+     * @param array $scripts
+     * @param string $file
+     * @return bool
      */
     public function aggregateScripts($package, array $scripts, $file)
     {
-        // Aggregate all the assets into one file.
-        $assets = new AssetCollection();
+        $assets = $this->newAssetCollection();
+
         foreach ($scripts as $script) {
             // Collect each candidate from a glob file search.
             $path = $this->getVendorDir($package).DIRECTORY_SEPARATOR.$script;
@@ -204,24 +211,54 @@ EOT;
     }
 
     /**
-     * Merges two arrays without switching individual values to arrays.
+     * Merges two arrays without changing string array keys. Appends to array if keys are numeric.
      *
      * @see array_merge()
      * @see array_merge_recursive()
+     *
+     * @param array $array1
+     * @param array $array2
+     * @return array
      */
     protected function arrayMergeRecursiveDistinct(array &$array1, array &$array2)
     {
         $merged = $array1;
 
         foreach ($array2 as $key => &$value) {
-            if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
-                $merged[$key] = $this->arrayMergeRecursiveDistinct($merged[$key], $value);
-            }
-            else {
-                $merged[$key] = $value;
+            if(is_numeric($key)){
+                $merged[] = $value;
+            } else {
+                if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
+                    $merged[$key] = $this->arrayMergeRecursiveDistinct($merged[$key], $value);
+                }
+                else {
+                    $merged[$key] = $value;
+                }
             }
         }
 
         return $merged;
+    }
+
+    /**
+     * @return AssetCollection
+     */
+    protected function newAssetCollection()
+    {
+        // Aggregate all the assets into one file.
+        $assets = new AssetCollection();
+        if ($this->config->has('component-scriptFilters')) {
+            $filters = $this->config->get('component-scriptFilters');
+            if (isset($filters) && is_array($filters)) {
+                foreach ($filters as $filter => $filterParams) {
+                    $reflection = new \ReflectionClass($filter);
+                    /** @var \Assetic\Filter\FilterInterface $filter */
+                    $filter = $reflection->newInstanceArgs($filterParams);
+                    $assets->ensureFilter($filter);
+                }
+            }
+        }
+
+        return $assets;
     }
 }

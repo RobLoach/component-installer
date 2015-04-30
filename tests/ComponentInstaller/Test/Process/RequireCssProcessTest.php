@@ -11,8 +11,6 @@
 
 namespace ComponentInstaller\Test\Process;
 
-use ComponentInstaller\Process\Process;
-use Composer\Composer;
 use ComponentInstaller\Process\RequireCssProcess;
 use Composer\Config;
 
@@ -21,6 +19,9 @@ use Composer\Config;
  */
 class RequireCssProcessTest extends ProcessTest
 {
+	/**
+	 * @var RequireCssProcess
+	 */
     protected $process;
 
     public function setUp()
@@ -32,6 +33,9 @@ class RequireCssProcessTest extends ProcessTest
      * testPackageStyles
      *
      * @dataProvider providerPackageStyles
+	 * @param array $packages
+	 * @param array $config
+	 * @param array $expected
      */
     public function testPackageStyles(array $packages, array $config, $expected = null)
     {

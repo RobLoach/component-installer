@@ -11,10 +11,6 @@
 
 namespace ComponentInstaller\Process;
 
-use Composer\Composer;
-use Composer\Package\Package;
-use Composer\Util\Filesystem;
-
 /**
  * Process which copies components from their source to the components folder.
  */
@@ -33,15 +29,12 @@ class CopyProcess extends Process
      *
      * @param array $packages
      *   An array of packages.
+     * @return bool
      */
     public function copy($packages)
     {
         // Iterate over each package that should be processed.
         foreach ($packages as $package) {
-            // Retrieve some basic information about the package.
-            $type = isset($package['type']) ? $package['type'] : 'library';
-            $root = isset($package['is-root']) ? $package['is-root'] : false;
-
             // Retrieve some information about the package.
             $packageDir = $this->getVendorDir($package);
             $name = isset($package['name']) ? $package['name'] : '__component__';
