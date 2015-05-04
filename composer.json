@@ -26,6 +26,9 @@
         "composer/composer": "1.*",
         "phpunit/phpunit": "4.*"
     },
+    "scripts": {
+        "test": "phpunit"
+    },
     "minimum-stability": "alpha",
     "archive": {
         "exclude": [

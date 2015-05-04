@@ -1,10 +1,8 @@
-Component Installer for Composer [![Build Status](https://secure.travis-ci.org/RobLoach/component-installer.png?branch=master)](http://travis-ci.org/RobLoach/component-installer)
-================================
+# Component Installer for [Composer](http://getcomposer.org) [![Build Status](https://secure.travis-ci.org/RobLoach/component-installer.png?branch=master)](http://travis-ci.org/RobLoach/component-installer)
 
 Allows installation of Components via [Composer](http://getcomposer.org).
 
-Usage
------
+## Usage
 
 To install a Component with Composer, add the Component to your *composer.json*
 `require` key. The following will install both [jQuery](http://jquery.com) and
@@ -51,8 +49,7 @@ file is also compiled, including all Component stylesheets:
 </html>
 ```
 
-Configuration
--------------
+## Configuration
 
 There are a number of ways to alter how Components are installed and used.
 
@@ -118,8 +115,7 @@ Defaults to `components`.
 }
 ```
 
-Creating a Component
---------------------
+## Creating a Component
 
 To set up a Component to be installed with Component Installer, have it
 `require` the package *robloach/component-installer* and set the `type` to
@@ -309,8 +305,7 @@ older version of composer, please make sure to explicitly require version
 }
 ```
 
-Not Invented Here
------------------
+## Not Invented Here
 
 There are many other amazing projects from which Component Installer was
 inspired. It is encouraged to take a look at some of the [other great package
@@ -323,8 +318,7 @@ management systems](http://github.com/wilmoore/frontend-packagers):
 * [Ender](http://ender.jit.su)
 * etc
 
-License
--------
+## License
 
 Component Installer is licensed under the MIT License - see LICENSE.md for
 details.
