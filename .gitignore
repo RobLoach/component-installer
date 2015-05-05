@@ -2,3 +2,4 @@ vendor
 .idea
 .project
 composer.phar
+composer.lock

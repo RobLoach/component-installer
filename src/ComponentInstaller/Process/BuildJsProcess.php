@@ -11,11 +11,6 @@
 
 namespace ComponentInstaller\Process;
 
-use Composer\Composer;
-use Composer\Package\Package;
-use Composer\Package\Loader\ArrayLoader;
-use Composer\Util\Filesystem;
-
 /**
  * Builds all JavaScript Components into one require-built.js.
  */
@@ -34,6 +29,7 @@ class BuildJsProcess extends Process
      *
      * @param array $packages
      *   An array of packages.
+     * @return bool
      */
     public function compile($packages)
     {
@@ -70,6 +66,7 @@ class BuildJsProcess extends Process
     /**
      * Provide the initial definition prefix.
      *
+     * @param string $componentName
      * @return string Begin the module definition.
      */
     protected function definePrefix($componentName)

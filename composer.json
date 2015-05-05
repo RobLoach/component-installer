@@ -23,7 +23,11 @@
         "composer-plugin-api": "1.0.0"
     },
     "require-dev": {
-        "composer/composer": "1.*"
+        "composer/composer": "1.*",
+        "phpunit/phpunit": "4.*"
+    },
+    "scripts": {
+        "test": "phpunit"
     },
     "minimum-stability": "alpha",
     "archive": {
@@ -33,5 +37,10 @@
             ".travis.yml",
             ".gitignore"
         ]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
     }
 }
