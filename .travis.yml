@@ -14,3 +14,6 @@ matrix:
         - php: hhvm
 
 before_script: composer install --dev
+
+notifications:
+    email: false
