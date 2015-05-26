@@ -16,7 +16,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0-dev"
+            "dev-master": "1.0.x-dev"
         },
         "class": "ComponentInstaller\\ComponentInstallerPlugin"
     },
@@ -26,19 +26,19 @@
         "composer-plugin-api": "1.0.0"
     },
     "require-dev": {
-        "composer/composer": "1.*",
+        "composer/composer": "1.*@alpha",
         "phpunit/phpunit": "4.*"
     },
     "scripts": {
         "test": "phpunit"
     },
-    "minimum-stability": "alpha",
     "archive": {
         "exclude": [
             "tests",
             "phpunit.xml.dist",
             ".travis.yml",
-            ".gitignore"
+            ".gitignore",
+            ".editorconfig"
         ]
     }
 }

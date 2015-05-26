@@ -12,7 +12,8 @@ To install a Component with Composer, add the Component to your *composer.json*
 {
     "require": {
         "components/jquery": "1.9.*",
-        "components/normalize.css": "2.*"
+        "components/normalize.css": "2.*",
+        "robloach/component-installer": "1.*"
     }
 }
 ```
@@ -288,8 +289,8 @@ Using `extra` with packages that ship with Component Installer, will override co
 ### Backwards Compatibility
 
 Newer versions of composer made backwards incompatible changes to the way
-plugins work. In order for `components-installer` to work on newer versions of
-composer, a backwards incompatibile fix had to be made. If you are using an
+plugins work. In order for `component-installer` to work on newer versions of
+Composer, a backwards incompatibile fix had to be made. If you are using an
 older version of composer, please make sure to explicitly require version
 `0.0.12` in your root `composer.json` file. Example:
 
