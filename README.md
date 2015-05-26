@@ -13,7 +13,7 @@ To install a Component with Composer, add the Component to your *composer.json*
     "require": {
         "components/jquery": "1.9.*",
         "components/normalize.css": "2.*",
-        "robloach/component-installer": "1.*"
+        "robloach/component-installer": "0.1.*"
     }
 }
 ```
