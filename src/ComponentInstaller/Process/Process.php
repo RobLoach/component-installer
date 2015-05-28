@@ -89,9 +89,9 @@ class Process implements ProcessInterface
         $allPackages = array();
         /** @var \Composer\Package\Locker $locker */
         $locker = $this->composer->getLocker();
-        if (isset($locker)) {
+        if ($locker !== null && $locker->isLocked()) {
             $lockData = $locker->getLockData();
-            $allPackages = isset($lockData['packages']) ? $lockData['packages'] : array();
+            $allPackages = $lockData['packages'];
 
             // Also merge in any of the development packages.
             $dev = isset($lockData['packages-dev']) ? $lockData['packages-dev'] : array();
