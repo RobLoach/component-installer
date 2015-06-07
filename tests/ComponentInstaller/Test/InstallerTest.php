@@ -101,7 +101,7 @@ class InstallerTest extends LibraryInstallerTest
     {
         // All package types support having Components.
         $tests[] = array('component', true);
-        $tests[] = array('all-supported', true);
+        $tests[] = array('all-supported', false);
 
         return $tests;
     }
