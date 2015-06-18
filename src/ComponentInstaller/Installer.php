@@ -178,7 +178,7 @@ class Installer extends LibraryInstaller
         // Initialize and execute each process in sequence.
         foreach ($processes as $class) {
             if(!class_exists($class)){
-                $io->write("<error>Process class '$class' not found, skip this process</error>");
+                $io->write("<warning>Process class '$class' not found, skipping this process</warning>");
                 continue;
             }
             
@@ -186,7 +186,7 @@ class Installer extends LibraryInstaller
             $process = new $class($composer, $io);
             // When an error occurs during initialization, end the process.
             if (!$process->init()) {
-                $io->write('<error>An error occurred while initializing the process.</error>');
+                $io->write("<warning>An error occurred while initializing the '$class' process.</warning>");
                 break;
             }
             $process->process();
