@@ -311,7 +311,7 @@ There are many other amazing projects from which Component Installer was
 inspired. It is encouraged to take a look at some of the [other great package
 management systems](http://github.com/wilmoore/frontend-packagers):
 * [npm](http://npmjs.org)
-* [bower](http://twitter.github.com/bower/)
+* [bower](http://bower.io/)
 * [component](http://github.com/component/component)
 * [Jam](http://jamjs.org)
 * [volo](http://volojs.org)
