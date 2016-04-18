@@ -76,10 +76,10 @@ class Process implements ProcessInterface
         $this->io = isset($io) ? $io : new NullIO();
         $this->fs = new Filesystem();
         $this->installationManager = $this->composer->getInstallationManager();
-
+        
         // TODO: Break compatibility and expect in interface
-        $options = func_get_arg(2);
-        $this->options = is_array($options) ? $options : null;
+        $args = func_get_args();
+        $this->options = count($args) > 2 && is_array($args[2]) ? $args[2]: array();
     }
 
     /**
