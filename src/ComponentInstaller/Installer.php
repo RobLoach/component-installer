@@ -21,6 +21,16 @@ use Composer\Package\AliasPackage;
  */
 class Installer extends LibraryInstaller
 {
+    private static $defaultProcesses = array(
+        // Copy the assets to the Components directory.
+        "ComponentInstaller\\Process\\CopyProcess",
+        // Build the require.js file.
+        "ComponentInstaller\\Process\\RequireJsProcess",
+        // Build the require.css file.
+        "ComponentInstaller\\Process\\RequireCssProcess",
+        // Compile the require-built.js file.
+        "ComponentInstaller\\Process\\BuildJsProcess",
+    );
 
     /**
      * The location where Components are to be installed.
@@ -160,30 +170,34 @@ class Installer extends LibraryInstaller
         // Retrieve basic information about the environment and present a
         // message to the user.
         $composer = $event->getComposer();
+        $config = $composer->getConfig();
         $io = $event->getIO();
         $io->write('<info>Compiling component files</info>');
 
         // Set up all the processes.
-        $processes = array(
-            // Copy the assets to the Components directory.
-            "ComponentInstaller\\Process\\CopyProcess",
-            // Build the require.js file.
-            "ComponentInstaller\\Process\\RequireJsProcess",
-            // Build the require.css file.
-            "ComponentInstaller\\Process\\RequireCssProcess",
-            // Compile the require-built.js file.
-            "ComponentInstaller\\Process\\BuildJsProcess",
-        );
+        $processes = $config->has('component-processes') ? 
+                $config->get('component-processes') :
+                static::$defaultProcesses;
 
         // Initialize and execute each process in sequence.
-        foreach ($processes as $class) {
+        foreach ($processes as $process) {
+            $options = array();
+
+            if (is_array($process)) {
+                $options = isset($process['options']) ? $process['options'] : array();
+                $class = $process['class'];
+            }
+            else {
+                $class = $process;
+            }
+
             if(!class_exists($class)){
                 $io->write("<warning>Process class '$class' not found, skipping this process</warning>");
                 continue;
             }
             
             /** @var \ComponentInstaller\Process\Process $process */
-            $process = new $class($composer, $io);
+            $process = new $class($composer, $io, $options);
             // When an error occurs during initialization, end the process.
             if (!$process->init()) {
                 $io->write("<warning>An error occurred while initializing the '$class' process.</warning>");
