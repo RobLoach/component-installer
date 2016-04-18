@@ -62,6 +62,12 @@ class Process implements ProcessInterface
     protected $installationManager;
 
     /**
+     * Any user provided options to configure this process.
+     * @var array
+     */
+    protected $options;
+
+    /**
      * {@inheritdoc}
      */
     public function __construct(Composer $composer = null, IOInterface $io = null)
@@ -70,6 +76,10 @@ class Process implements ProcessInterface
         $this->io = isset($io) ? $io : new NullIO();
         $this->fs = new Filesystem();
         $this->installationManager = $this->composer->getInstallationManager();
+
+        // TODO: Break compatibility and expect in interface
+        $options = func_get_arg(2);
+        $this->options = is_array($options) ? $options : null;
     }
 
     /**
