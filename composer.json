@@ -26,8 +26,8 @@
         "composer-plugin-api": "^1.0"
     },
     "require-dev": {
-        "composer/composer": "1.*@alpha",
-        "phpunit/phpunit": "4.*"
+        "composer/composer": "~1.1.2",
+        "phpunit/phpunit": "~5.4.6"
     },
     "scripts": {
         "test": "phpunit"
