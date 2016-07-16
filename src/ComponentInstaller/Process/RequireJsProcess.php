@@ -66,8 +66,8 @@ class RequireJsProcess extends Process
         }
 
         $assets = $this->newAssetCollection();
-        $assets->add(new FileAsset(dirname(__DIR__) . '/Resources/require.js'));
         $assets->add(new StringAsset($requireConfig));
+        $assets->add(new FileAsset(dirname(__DIR__) . '/Resources/require.js'));
 
         // Append the config to the require.js and write it.
         if (file_put_contents($this->componentDir . '/require.js', $assets->dump()) === FALSE) {
