@@ -1,3 +1,20 @@
+# DEPRECATED
+
+Component Installer has been depreceted. Use [Component Installers Extender](https://github.com/oomphinc/composer-installers-extender) instead.
+
+```
+composer require oomphinc/composer-installers-extender
+```
+
+```
+  "extra": {
+    "installer-types": ["component"],
+    "installer-paths": {
+      "components/{$name}/": ["type:component"]
+    }
+  }
+```
+
 # Component Installer for [Composer](http://getcomposer.org) [![Build Status](https://secure.travis-ci.org/RobLoach/component-installer.png?branch=master)](http://travis-ci.org/RobLoach/component-installer)
 
 Allows installation of Components via [Composer](http://getcomposer.org).
