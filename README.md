@@ -1,6 +1,6 @@
 # DEPRECATED
 
-Component Installer has been depreceted. Use [Asset Packagist](https://asset-packagist.org/) or [Component Installers Extender](https://github.com/oomphinc/composer-installers-extender) instead.
+Component Installer has been deprecated. Use [Asset Packagist](https://asset-packagist.org/) or [Component Installers Extender](https://github.com/oomphinc/composer-installers-extender) instead.
 
 ```
 composer require oomphinc/composer-installers-extender
