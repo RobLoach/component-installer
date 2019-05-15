@@ -40,5 +40,6 @@
             ".gitignore",
             ".editorconfig"
         ]
-    }
+    },
+    "abandoned": "oomphinc/composer-installers-extender"
 }
