@@ -1,7 +1,7 @@
 # DEPRECATED
 
 Component Installer has been deprecated. Use one of the following projects instead:
-- [Component Installers Extender](https://github.com/oomphinc/composer-installers-extender)
+- [Composer Installers Extender](https://github.com/oomphinc/composer-installers-extender)
 - [Asset Packagist](https://asset-packagist.org)
 - [Composer Asset Plugin](https://github.com/fxpio/composer-asset-plugin)
 
