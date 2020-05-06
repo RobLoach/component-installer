@@ -4,6 +4,7 @@ Component Installer has been deprecated. Use one of the following projects inste
 - [Composer Installers Extender](https://github.com/oomphinc/composer-installers-extender)
 - [Asset Packagist](https://asset-packagist.org)
 - [Composer Asset Plugin](https://github.com/fxpio/composer-asset-plugin)
+- [Laravel Mix](https://laravel.com/docs/5.8/mix) (Example: [eventum/eventum#801](https://github.com/eventum/eventum/pull/801) and  [eventum/eventum#812](https://github.com/eventum/eventum/pull/812))
 
 ## Example
 
